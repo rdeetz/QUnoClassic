@@ -1,0 +1,8 @@
+[Bb]in/
+[Oo]bj/
+[Xx]64/
+.vs/
+.vscode/
+*.user
+*.filters
+*.cache
