@@ -1,4 +1,4 @@
-// QUnoBare - QUnoClassic.h
+// QUnoClassic - QUnoClassic.h
 // 2021 Roger Deetz
 
 #pragma once

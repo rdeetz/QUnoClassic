@@ -1,4 +1,4 @@
-// QUnoBare - framework.h
+// QUnoClassic - framework.h
 // 2021 Roger Deetz
 
 #pragma once

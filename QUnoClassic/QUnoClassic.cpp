@@ -1,4 +1,4 @@
-// QUnoBare - QUnoClassic.cpp
+// QUnoClassic - QUnoClassic.cpp
 // 2021 Roger Deetz
 
 #include "framework.h"

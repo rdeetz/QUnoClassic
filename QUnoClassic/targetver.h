@@ -1,4 +1,4 @@
-// QUnoBare - targetver.h
+// QUnoClassic - targetver.h
 // 2021 Roger Deetz
 
 #pragma once
