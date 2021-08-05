@@ -158,6 +158,11 @@
     <Image Include="QUnoClassic.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QUnoLib\QUnoLib.vcxproj">
+      <Project>{2fa63239-cab6-4f25-90c7-7d5f1fdf57b0}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
