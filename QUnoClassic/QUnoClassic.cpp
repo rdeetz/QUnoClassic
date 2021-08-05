@@ -3,6 +3,7 @@
 
 #include "framework.h"
 #include "QUnoClassic.h"
+#include "QUnoLib.h"
 
 #define MAX_LOADSTRING 128
 
@@ -88,10 +89,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
+        INT result = 0;
 
         switch (wmId)
         {
         case IDM_ABOUT:
+            result = CreateGame(4);
             DialogBox(_hInstance, MAKEINTRESOURCE(IDD_ABOUTDLG), hWnd, AboutDlgProc);
             break;
 

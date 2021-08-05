@@ -2,8 +2,9 @@
 // 2021 Roger Deetz
 
 #include "pch.h"
+#include "QUnoLib.h"
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
     switch (ul_reason_for_call)
     {
@@ -14,4 +15,24 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
         break;
     }
     return TRUE;
+}
+
+INT CreateGame(INT nNumberOfPlayers)
+{
+    INT result = 0;
+
+    if (nNumberOfPlayers <= 0)
+    {
+        result = -1;
+    }
+    else if (nNumberOfPlayers > 9)
+    {
+        result = 0;
+    }
+    else
+    {
+        result = 1;
+    }
+
+    return result;
 }
