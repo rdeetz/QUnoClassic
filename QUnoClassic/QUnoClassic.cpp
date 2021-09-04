@@ -21,7 +21,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
     UNREFERENCED_PARAMETER(hPreviousInstance);
     UNREFERENCED_PARAMETER(pCmdLine);
 
-    LoadStringW(hInstance, IDS_APP_TITLE, _szWindowTitle, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDS_QUNO, _szWindowTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_QUNOCLASSIC, _szWindowClass, MAX_LOADSTRING);
     RegisterWndClass(hInstance);
 
@@ -55,7 +55,7 @@ ATOM RegisterWndClass(HINSTANCE hInstance)
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_QUNOCLASSIC));
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_QUNOCLASSIC_SMALL));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_QUNOCLASSIC);
@@ -93,8 +93,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         switch (wmId)
         {
+        case IDM_NEW:
+            
+            break;
+
         case IDM_ABOUT:
-            result = CreateGame(4);
             DialogBox(_hInstance, MAKEINTRESOURCE(IDD_ABOUTDLG), hWnd, AboutDlgProc);
             break;
 
