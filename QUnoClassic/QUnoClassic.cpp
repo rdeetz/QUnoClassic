@@ -94,6 +94,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wmId)
         {
         case IDM_NEW:
+            // TODO Start a new game.
+            //      Create players: 1 human, 3 computer
+            //      Create a game.
+            //      Add players to game.
+            //      Start game.
             
             break;
 

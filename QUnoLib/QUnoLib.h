@@ -9,10 +9,13 @@
 #define QUNOLIB_API __declspec(dllimport)
 #endif // QUNOLIB_EXPORTS
 
-extern "C" QUNOLIB_API INT CreateGame(INT);
+typedef HANDLE HGAME;
+typedef HANDLE HPLAYER;
+
+extern "C" QUNOLIB_API HGAME CreateGame();
+extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPCTSTR playerName, BOOL isHuman);
 
 /*
-extern "C" QUNOLIB_API INT CreatePlayer(INT);
 extern "C" QUNOLIB_API INT CreateDeck(INT);
 extern "C" QUNOLIB_API INT AddPlayerToGame(INT);
 extern "C" QUNOLIB_API INT StartGame(INT); // shuffle and deal

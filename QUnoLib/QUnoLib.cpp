@@ -17,22 +17,12 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
-INT CreateGame(INT nNumberOfPlayers)
+HGAME CreateGame()
 {
-    INT result = 0;
+    return NULL;
+}
 
-    if (nNumberOfPlayers <= 0)
-    {
-        result = -1;
-    }
-    else if (nNumberOfPlayers > 9)
-    {
-        result = 0;
-    }
-    else
-    {
-        result = 1;
-    }
-
-    return result;
+HPLAYER CreatePlayer(LPCTSTR playerName, BOOL isHuman)
+{
+    return NULL;
 }
