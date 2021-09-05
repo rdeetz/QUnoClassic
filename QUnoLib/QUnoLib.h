@@ -9,6 +9,8 @@
 #define QUNOLIB_API __declspec(dllimport)
 #endif // QUNOLIB_EXPORTS
 
+#define MAX_PLAYER_NAME     128
+
 #define CARD_COLOR_WILD     0
 #define CARD_COLOR_RED      1
 #define CARD_COLOR_BLUE     2
@@ -39,17 +41,27 @@ typedef struct _tagCARD
 
 typedef struct _tagPLAYER
 {
-    // TODO String name
+    LPWSTR lpPlayerName;
     BOOL bIsHuman;
-    // TODO Array of cards
-
+    CARD* lpCards;
 } PLAYER;
+
+typedef struct _tagGAME
+{
+    // TODO Deck
+    PLAYER* lpPlayers;
+} GAME;
 
 typedef HANDLE HGAME;
 typedef HANDLE HPLAYER;
 
-extern "C" QUNOLIB_API HGAME CreateGame();
+extern "C" QUNOLIB_API INT QuInitialize();
+
 extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPWSTR lpPlayerName, BOOL bIsHuman);
+extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, CARD* card);
+extern "C" QUNOLIB_API CARD* RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex);
+
+extern "C" QUNOLIB_API HGAME CreateGame();
 
 /*
 extern "C" QUNOLIB_API INT CreateDeck(INT);
