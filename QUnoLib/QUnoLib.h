@@ -9,11 +9,47 @@
 #define QUNOLIB_API __declspec(dllimport)
 #endif // QUNOLIB_EXPORTS
 
+#define CARD_COLOR_WILD     0
+#define CARD_COLOR_RED      1
+#define CARD_COLOR_BLUE     2
+#define CARD_COLOR_YELLOW   3
+#define CARD_COLOR_GREEN    4
+
+#define CARD_VALUE_ZERO     0
+#define CARD_VALUE_ONE      1
+#define CARD_VALUE_TWO      2
+#define CARD_VALUE_THREE    3
+#define CARD_VALUE_FOUR     4
+#define CARD_VALUE_FIVE     5
+#define CARD_VALUE_SIX      6
+#define CARD_VALUE_SEVEN    7
+#define CARD_VALUE_EIGHT    8
+#define CARD_VALUE_NINE     9
+#define CARD_VALUE_SKIP     10
+#define CARD_VALUE_REVERSE  11
+#define CARD_VALUE_DRAWTWO  12
+#define CARD_VALUE_WILD     13
+#define CARD_VALUE_WILDD4   14
+
+typedef struct _tagCARD
+{
+    UINT8 value;
+    UINT8 color;
+} CARD;
+
+typedef struct _tagPLAYER
+{
+    // TODO String name
+    BOOL bIsHuman;
+    // TODO Array of cards
+
+} PLAYER;
+
 typedef HANDLE HGAME;
 typedef HANDLE HPLAYER;
 
 extern "C" QUNOLIB_API HGAME CreateGame();
-extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPCTSTR playerName, BOOL isHuman);
+extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPWSTR lpPlayerName, BOOL bIsHuman);
 
 /*
 extern "C" QUNOLIB_API INT CreateDeck(INT);

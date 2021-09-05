@@ -4,9 +4,9 @@
 #include "pch.h"
 #include "QUnoLib.h"
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
-    switch (ul_reason_for_call)
+    switch (dwReason)
     {
     case DLL_PROCESS_ATTACH:
     case DLL_THREAD_ATTACH:
@@ -22,7 +22,7 @@ HGAME CreateGame()
     return NULL;
 }
 
-HPLAYER CreatePlayer(LPCTSTR playerName, BOOL isHuman)
+HPLAYER CreatePlayer(LPWSTR lpPlayerName, BOOL bIsHuman)
 {
     return NULL;
 }
