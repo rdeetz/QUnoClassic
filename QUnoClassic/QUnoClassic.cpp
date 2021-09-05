@@ -12,14 +12,14 @@ WCHAR _szWindowTitle[MAX_LOADSTRING];
 WCHAR _szWindowClass[MAX_LOADSTRING];
 
 ATOM RegisterWndClass(HINSTANCE);
-BOOL InitInstance(HINSTANCE, int);
+BOOL InitInstance(HINSTANCE, INT);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPWSTR lpCmdLine, _In_ INT nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPreviousInstance);
-    UNREFERENCED_PARAMETER(pCmdLine);
+    UNREFERENCED_PARAMETER(lpCmdLine);
 
     LoadStringW(hInstance, IDS_QUNO, _szWindowTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_QUNOCLASSIC, _szWindowClass, MAX_LOADSTRING);
@@ -57,14 +57,14 @@ ATOM RegisterWndClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_QUNOCLASSIC));
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_QUNOCLASSIC_SMALL));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_QUNOCLASSIC);
     wcex.lpszClassName  = _szWindowClass;
 
     return RegisterClassExW(&wcex);
 }
 
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
 {
    _hInstance = hInstance;
 
@@ -88,8 +88,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_COMMAND:
     {
-        int wmId = LOWORD(wParam);
-        INT result = 0;
+        INT wmId = LOWORD(wParam);
 
         switch (wmId)
         {
@@ -99,7 +98,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             //      Create a game.
             //      Add players to game.
             //      Start game.
-            
+
             break;
 
         case IDM_ABOUT:
