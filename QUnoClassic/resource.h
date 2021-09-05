@@ -9,6 +9,7 @@
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
 #define IDM_NEW                         106
+#define IDM_OPTIONS                     110
 #define IDI_QUNOCLASSIC                 107
 #define IDI_QUNOCLASSIC_SMALL           108
 #define IDC_QUNOCLASSIC                 109
@@ -23,6 +24,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1000
-#define _APS_NEXT_SYMED_VALUE           110
+#define _APS_NEXT_SYMED_VALUE           111
 #endif
 #endif
