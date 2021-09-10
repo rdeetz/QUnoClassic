@@ -17,19 +17,25 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK OptionsDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 
+WCHAR _szDefaultPlayerName[MAX_LOADSTRING];
+WCHAR _szDefaultComputerPlayers[MAX_LOADSTRING];
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPWSTR lpCmdLine, _In_ INT nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPreviousInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    LoadStringW(hInstance, IDS_QUNO, _szWindowTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_QUNOCLASSIC, _szWindowClass, MAX_LOADSTRING);
+    LoadString(hInstance, IDS_QUNO, _szWindowTitle, MAX_LOADSTRING);
+    LoadString(hInstance, IDC_QUNOCLASSIC, _szWindowClass, MAX_LOADSTRING);
     RegisterWndClass(hInstance);
 
     if (!InitInstance (hInstance, nCmdShow))
     {
         return FALSE;
     }
+
+    LoadString(hInstance, IDS_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
+    LoadString(hInstance, IDS_DEFAULTCOMPUTERPLAYERS, _szDefaultComputerPlayers, MAX_LOADSTRING);
 
     HACCEL hAccelerators = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_QUNOCLASSIC));
     MSG msg;
@@ -149,6 +155,11 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
     switch (message)
     {
     case WM_INITDIALOG:
+        // TODO Set the initial player name to the default.
+        //      Set the initial number of computer players to the default.
+        SetDlgItemText(hDlg, IDC_DEFAULTPLAYERNAME, _szDefaultPlayerName);
+        SetDlgItemText(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, _szDefaultComputerPlayers);
+
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
