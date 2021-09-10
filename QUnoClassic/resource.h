@@ -11,6 +11,8 @@
 #define IDM_NEW                         106
 #define IDM_OPTIONS                     110
 #define IDD_OPTIONSDLG                  111
+#define IDC_DEFAULTPLAYERNAME           112
+#define IDC_DEFAULTCOMPUTERPLAYERS      113
 #define IDI_QUNOCLASSIC                 107
 #define IDI_QUNOCLASSIC_SMALL           108
 #define IDC_QUNOCLASSIC                 109
@@ -25,6 +27,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1000
-#define _APS_NEXT_SYMED_VALUE           112
+#define _APS_NEXT_SYMED_VALUE           114
 #endif
 #endif
