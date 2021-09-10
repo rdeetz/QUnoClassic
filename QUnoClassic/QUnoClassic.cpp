@@ -171,10 +171,21 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
-        // TODO If OK, update the global default player name and count of players 
-        //      with the new values from the controls.
-        //      If Cancel, don't update the globals.
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+        if (LOWORD(wParam) == IDOK)
+        {
+            // TODO Validate the values in the edit controls:
+            //      Not null or empty
+            //      For name, trim it
+            //      For name, not longer than MAX_LOADSTRING
+            //      For number, must be parsable as unsigned int
+            //      For number, greater than 0 and less than 9
+            GetDlgItemText(hDlg, IDC_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
+            GetDlgItemText(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, _szDefaultComputerPlayers, MAX_LOADSTRING);
+            EndDialog(hDlg, LOWORD(wParam));
+
+            return (INT_PTR)TRUE;
+        }
+        else if (LOWORD(wParam) == IDCANCEL)
         {
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
