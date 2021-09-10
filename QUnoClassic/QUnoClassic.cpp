@@ -18,7 +18,7 @@ INT_PTR CALLBACK OptionsDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 
 WCHAR _szDefaultPlayerName[MAX_LOADSTRING];
-WCHAR _szDefaultComputerPlayers[MAX_LOADSTRING];
+WCHAR _szDefaultComputerPlayers[MAX_LOADSTRING]; // This should be UINT.
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPWSTR lpCmdLine, _In_ INT nCmdShow)
 {
@@ -155,14 +155,25 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
     switch (message)
     {
     case WM_INITDIALOG:
-        // TODO Set the initial player name to the default.
-        //      Set the initial number of computer players to the default.
+        // TODO Create an up-down control rather than a plain edit control 
+        //      for the default number of computer players.
+        //      https://docs.microsoft.com/en-us/windows/win32/controls/create-an-up-down-control
+        //
+        //      1. Include commctrl.h
+        //      2. Link with commctl.lib (and specify the manifest?)
+        //      3. Get HWND of the edit control IDC_DEFAULTCOMPUTERPLAYERS in WM_INITDIALOG via GetDlgItem?
+        //      4. Create the up-down control as in the example, but don't set UDS_AUTOBUDDY
+        //      5. Set the buddy window via SendMessage(UDM_SETBUDDY, hwndEdit)
+
         SetDlgItemText(hDlg, IDC_DEFAULTPLAYERNAME, _szDefaultPlayerName);
         SetDlgItemText(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, _szDefaultComputerPlayers);
 
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
+        // TODO If OK, update the global default player name and count of players 
+        //      with the new values from the controls.
+        //      If Cancel, don't update the globals.
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
         {
             EndDialog(hDlg, LOWORD(wParam));
@@ -174,37 +185,6 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
     return (INT_PTR)FALSE;
 }
-
-/*
-TODO May one day want to implement an up-down control.
-1. Need to include commctrl.h
-2. Need to link with commctl.lib (and manifest?)
-3. Get HWND of the edit control IDC_DEFAULTCOMPUTERPLAYERS in WM_INITDIALOG GetDlgItem?
-4. Create the up-down control as below, but don't use UDS_AUTOBUDDY
-5. Set the buddy window SendMessage(UDM_SETBUDDY, hwndBuddy)
-HWND CreateUpDnCtl(HWND hwndParent)
-{
-    icex.dwICC = ICC_UPDOWN_CLASS;    // Set the Initialization Flag value.
-    InitCommonControlsEx(&icex);      // Initialize the Common Controls Library.
-
-    hControl = CreateWindowEx(WS_EX_LEFT | WS_EX_LTRREADING,
-                              UPDOWN_CLASS,
-                              NULL,
-                              WS_CHILDWINDOW | WS_VISIBLE
-                              | UDS_AUTOBUDDY | UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_HOTTRACK,
-                              0, 0,
-                              0, 0,         // Set to zero to automatically size to fit the buddy window.
-                              hwndParent,
-                              NULL,
-                              g_hInst,
-                              NULL);
-
-    SendMessage(hControl, UDM_SETRANGE, 0, MAKELPARAM(valMax, valMin));    // Sets the controls direction 
-                                                                           // and range.
-
-    return (hControl);
-}
-*/
 
 INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
