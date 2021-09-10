@@ -164,6 +164,37 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
     return (INT_PTR)FALSE;
 }
 
+/*
+TODO May one day want to implement an up-down control.
+1. Need to include commctrl.h
+2. Need to link with commctl.lib (and manifest?)
+3. Get HWND of the edit control IDC_DEFAULTCOMPUTERPLAYERS in WM_INITDIALOG GetDlgItem?
+4. Create the up-down control as below, but don't use UDS_AUTOBUDDY
+5. Set the buddy window SendMessage(UDM_SETBUDDY, hwndBuddy)
+HWND CreateUpDnCtl(HWND hwndParent)
+{
+    icex.dwICC = ICC_UPDOWN_CLASS;    // Set the Initialization Flag value.
+    InitCommonControlsEx(&icex);      // Initialize the Common Controls Library.
+
+    hControl = CreateWindowEx(WS_EX_LEFT | WS_EX_LTRREADING,
+                              UPDOWN_CLASS,
+                              NULL,
+                              WS_CHILDWINDOW | WS_VISIBLE
+                              | UDS_AUTOBUDDY | UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_HOTTRACK,
+                              0, 0,
+                              0, 0,         // Set to zero to automatically size to fit the buddy window.
+                              hwndParent,
+                              NULL,
+                              g_hInst,
+                              NULL);
+
+    SendMessage(hControl, UDM_SETRANGE, 0, MAKELPARAM(valMax, valMin));    // Sets the controls direction 
+                                                                           // and range.
+
+    return (hControl);
+}
+*/
+
 INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
