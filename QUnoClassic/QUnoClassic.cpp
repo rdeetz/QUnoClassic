@@ -18,7 +18,7 @@ INT_PTR CALLBACK OptionsDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 
 WCHAR _szDefaultPlayerName[MAX_LOADSTRING];
-WCHAR _szDefaultComputerPlayers[MAX_LOADSTRING]; // This should be UINT.
+UINT _nDefaultComputerPlayers = 3;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPWSTR lpCmdLine, _In_ INT nCmdShow)
 {
@@ -35,7 +35,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
     }
 
     LoadString(hInstance, IDS_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
-    LoadString(hInstance, IDS_DEFAULTCOMPUTERPLAYERS, _szDefaultComputerPlayers, MAX_LOADSTRING);
 
     HACCEL hAccelerators = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_QUNOCLASSIC));
     MSG msg;
@@ -166,7 +165,7 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
         //      5. Set the buddy window via SendMessage(UDM_SETBUDDY, hwndEdit)
 
         SetDlgItemText(hDlg, IDC_DEFAULTPLAYERNAME, _szDefaultPlayerName);
-        SetDlgItemText(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, _szDefaultComputerPlayers);
+        SetDlgItemInt(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, _nDefaultComputerPlayers, FALSE);
 
         return (INT_PTR)TRUE;
 
@@ -180,7 +179,14 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
             //      For number, must be parsable as unsigned int
             //      For number, greater than 0 and less than 9
             GetDlgItemText(hDlg, IDC_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
-            GetDlgItemText(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, _szDefaultComputerPlayers, MAX_LOADSTRING);
+            BOOL bTranslated;
+            UINT nResult = GetDlgItemInt(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, &bTranslated, FALSE);
+
+            if (bTranslated == TRUE)
+            {
+                _nDefaultComputerPlayers = nResult;
+            }
+           
             EndDialog(hDlg, LOWORD(wParam));
 
             return (INT_PTR)TRUE;
