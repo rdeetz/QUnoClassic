@@ -34,6 +34,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
         return FALSE;
     }
 
+    // TODO If the Registry key and values exist, read in the defaults.
     LoadString(hInstance, IDS_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
 
     HACCEL hAccelerators = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_QUNOCLASSIC));
@@ -186,6 +187,10 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
             {
                 _nDefaultComputerPlayers = nResult;
             }
+
+            // TODO If validations fail, show a message box.
+            //      If validations succeed, copy the values to the global defaults.
+            //      Save te values to the Registry (create the key if it doesn't exist).
            
             EndDialog(hDlg, LOWORD(wParam));
 
