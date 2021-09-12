@@ -152,9 +152,25 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 {
     UNREFERENCED_PARAMETER(lParam);
 
+    RECT rcOwner;
+    RECT rcDlg;
+    RECT rcNew;
+    HWND hwndOwner;
+
     switch (message)
     {
     case WM_INITDIALOG:
+        hwndOwner = GetParent(hDlg);
+        GetWindowRect(hwndOwner, &rcOwner);
+        GetWindowRect(hDlg, &rcDlg);
+        
+        CopyRect(&rcNew, &rcOwner);
+        OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
+        OffsetRect(&rcNew, -rcNew.left, -rcNew.top);
+        OffsetRect(&rcNew, -rcDlg.right, -rcDlg.bottom);
+
+        SetWindowPos(hDlg, HWND_TOP, rcOwner.left + (rcNew.right / 2), rcOwner.top + (rcNew.bottom / 2), 0, 0, SWP_NOSIZE);
+        
         // TODO Create an up-down control rather than a plain edit control 
         //      for the default number of computer players.
         //      https://docs.microsoft.com/en-us/windows/win32/controls/create-an-up-down-control
@@ -212,9 +228,25 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 {
     UNREFERENCED_PARAMETER(lParam);
 
+    RECT rcOwner;
+    RECT rcDlg;
+    RECT rcNew;
+    HWND hwndOwner;
+
     switch (message)
     {
     case WM_INITDIALOG:
+        hwndOwner = GetParent(hDlg);
+        GetWindowRect(hwndOwner, &rcOwner);
+        GetWindowRect(hDlg, &rcDlg);
+        
+        CopyRect(&rcNew, &rcOwner);
+        OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
+        OffsetRect(&rcNew, -rcNew.left, -rcNew.top);
+        OffsetRect(&rcNew, -rcDlg.right, -rcDlg.bottom);
+
+        SetWindowPos(hDlg, HWND_TOP, rcOwner.left + (rcNew.right / 2), rcOwner.top + (rcNew.bottom / 2), 0, 0, SWP_NOSIZE);
+
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
