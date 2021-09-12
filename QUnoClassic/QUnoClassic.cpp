@@ -7,6 +7,7 @@
 
 #define MAX_LOADSTRING 128
 #define Q_FILEVERSION L"FileVersion"
+#define Q_LIB_MODULE L"QUNOLIB.DLL"
 
 HINSTANCE _hInstance;
 TCHAR _szWindowTitle[MAX_LOADSTRING];
@@ -267,20 +268,33 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         _hBoldFont = CreateFontIndirect(&lf);
         SendMessage(hwndProduct, WM_SETFONT, (WPARAM)_hBoldFont, 0);
 
-        TCHAR szProductvVersion1[MAX_LOADSTRING];
-        GetDlgItemText(hDlg, IDC_QUNO_VERSION, szProductvVersion1, MAX_LOADSTRING);
+        TCHAR szProductVersion1[MAX_LOADSTRING];
+        GetDlgItemText(hDlg, IDC_QUNO_VERSION, szProductVersion1, MAX_LOADSTRING);
 
         TCHAR szModule[MAX_PATH];
         GetModuleFileName(NULL, szModule, MAX_PATH);
 
-        TCHAR szVersion[MAX_LOADSTRING];
-        bResult = GetFileVersionString(szModule, (LPTSTR)Q_FILEVERSION, szVersion, MAX_LOADSTRING);
+        TCHAR szProductVersion[MAX_LOADSTRING];
+        bResult = GetFileVersionString(szModule, (LPTSTR)Q_FILEVERSION, szProductVersion, MAX_LOADSTRING);
 
         if (bResult)
         {
             TCHAR szProductvVersion2[MAX_LOADSTRING];
-            wsprintf(szProductvVersion2, szProductvVersion1, szVersion);
+            wsprintf(szProductvVersion2, szProductVersion1, szProductVersion);
             SetDlgItemText(hDlg, IDC_QUNO_VERSION, szProductvVersion2);
+        }
+
+        TCHAR szLibraryVersion1[MAX_LOADSTRING];
+        GetDlgItemText(hDlg, IDC_QUNOLIB_VERSION, szLibraryVersion1, MAX_LOADSTRING);
+
+        TCHAR szLibraryVersion[MAX_LOADSTRING];
+        bResult = GetFileVersionString((LPTSTR)Q_LIB_MODULE, (LPTSTR)Q_FILEVERSION, szLibraryVersion, MAX_LOADSTRING);
+
+        if (bResult)
+        {
+            TCHAR szLibraryVersion2[MAX_LOADSTRING];
+            wsprintf(szLibraryVersion2, szLibraryVersion1, szLibraryVersion);
+            SetDlgItemText(hDlg, IDC_QUNOLIB_VERSION, szLibraryVersion2);
         }
 
         return (INT_PTR)TRUE;

@@ -16,6 +16,7 @@
 #define IDC_DEFAULTCOMPUTERPLAYERS      113
 #define IDC_QUNO_PRODUCT                114
 #define IDC_QUNO_VERSION                115
+#define IDC_QUNOLIB_VERSION             116
 #define IDI_QUNOCLASSIC                 107
 #define IDI_QUNOCLASSIC_SMALL           108
 #define IDC_QUNOCLASSIC                 109
@@ -30,6 +31,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1000
-#define _APS_NEXT_SYMED_VALUE           116
+#define _APS_NEXT_SYMED_VALUE           117
 #endif
 #endif
