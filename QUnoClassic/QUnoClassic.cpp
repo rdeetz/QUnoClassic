@@ -17,9 +17,16 @@ BOOL InitInstance(HINSTANCE, INT);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK OptionsDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
+BOOL GetFileVersionString(LPWSTR, LPWSTR, LPWSTR, UINT);
 
 WCHAR _szDefaultPlayerName[MAX_LOADSTRING];
 UINT _nDefaultComputerPlayers = 3;
+
+struct LANGUAGEANDCODEPAGE
+{
+    WORD wLanguage;
+    WORD wCodePage;
+};
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPWSTR lpCmdLine, _In_ INT nCmdShow)
 {
@@ -272,4 +279,48 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
     }
 
     return (INT_PTR)FALSE;
+}
+
+BOOL GetFileVersionString(LPWSTR lpModule, LPWSTR lpKey, LPWSTR lpValue, UINT uMaxValue)
+{
+    BOOL bReturn = FALSE;
+
+    DWORD dwSize = GetFileVersionInfoSize(lpModule, 0);
+
+    if (dwSize > 0)
+    {
+        LPVOID pBlock = GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, dwSize);
+
+        if (pBlock)
+        {
+            BOOL bResult = GetFileVersionInfo(lpModule, 0, dwSize, pBlock);
+
+            if (bResult)
+            {
+                LANGUAGEANDCODEPAGE* pLanguage;
+                UINT uLanguageLen = sizeof(LANGUAGEANDCODEPAGE);
+                bResult = VerQueryValue(pBlock, _T("\\VarFileInfo\\Translation"), (LPVOID*)&pLanguage, &uLanguageLen);
+
+                if (bResult && (uLanguageLen > 0))
+                {
+                    WCHAR szSubBlock[MAX_PATH];
+                    wsprintf(szSubBlock, _T("\\StringFileInfo\\%04x%04x\\"), pLanguage[0].wLanguage, pLanguage[0].wCodePage);
+                    lstrcat(szSubBlock, lpKey);
+
+                    LPWSTR lpBuffer;
+                    bResult = VerQueryValue(pBlock, szSubBlock, (LPVOID*)&lpBuffer, &uMaxValue);
+
+                    if (bResult && (uMaxValue > 0))
+                    {
+                        lstrcpy(lpValue, lpBuffer);
+                        bReturn = TRUE;
+                    }
+                }
+            }
+
+            GlobalFree(GlobalHandle(pBlock));
+        }
+    }
+
+    return bReturn;
 }
