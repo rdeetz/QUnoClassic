@@ -6,6 +6,7 @@
 #include "QUnoLib.h"
 
 #define MAX_LOADSTRING 128
+#define Q_FILEVERSION L"FileVersion"
 
 HINSTANCE _hInstance;
 TCHAR _szWindowTitle[MAX_LOADSTRING];
@@ -243,6 +244,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
     HWND hwndProduct;
     HFONT hOldFont;
     LOGFONT lf;
+    BOOL bResult;
 
     switch (message)
     {
@@ -264,6 +266,22 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         lf.lfWeight = FW_BOLD;
         _hBoldFont = CreateFontIndirect(&lf);
         SendMessage(hwndProduct, WM_SETFONT, (WPARAM)_hBoldFont, 0);
+
+        TCHAR szProductvVersion1[MAX_LOADSTRING];
+        GetDlgItemText(hDlg, IDC_QUNO_VERSION, szProductvVersion1, MAX_LOADSTRING);
+
+        TCHAR szModule[MAX_PATH];
+        GetModuleFileName(NULL, szModule, MAX_PATH);
+
+        TCHAR szVersion[MAX_LOADSTRING];
+        bResult = GetFileVersionString(szModule, (LPTSTR)Q_FILEVERSION, szVersion, MAX_LOADSTRING);
+
+        if (bResult)
+        {
+            TCHAR szProductvVersion2[MAX_LOADSTRING];
+            wsprintf(szProductvVersion2, szProductvVersion1, szVersion);
+            SetDlgItemText(hDlg, IDC_QUNO_VERSION, szProductvVersion2);
+        }
 
         return (INT_PTR)TRUE;
 
