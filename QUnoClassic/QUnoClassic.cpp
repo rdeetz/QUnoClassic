@@ -10,6 +10,7 @@
 HINSTANCE _hInstance;
 WCHAR _szWindowTitle[MAX_LOADSTRING];
 WCHAR _szWindowClass[MAX_LOADSTRING];
+HFONT _hBoldFont;
 
 ATOM RegisterWndClass(HINSTANCE);
 BOOL InitInstance(HINSTANCE, INT);
@@ -170,7 +171,7 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
         OffsetRect(&rcNew, -rcDlg.right, -rcDlg.bottom);
 
         SetWindowPos(hDlg, HWND_TOP, rcOwner.left + (rcNew.right / 2), rcOwner.top + (rcNew.bottom / 2), 0, 0, SWP_NOSIZE);
-        
+
         // TODO Create an up-down control rather than a plain edit control 
         //      for the default number of computer players.
         //      https://docs.microsoft.com/en-us/windows/win32/controls/create-an-up-down-control
@@ -232,6 +233,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
     RECT rcDlg;
     RECT rcNew;
     HWND hwndOwner;
+    HWND hwndProduct;
+    HFONT hOldFont;
+    LOGFONT lf;
 
     switch (message)
     {
@@ -247,11 +251,19 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
         SetWindowPos(hDlg, HWND_TOP, rcOwner.left + (rcNew.right / 2), rcOwner.top + (rcNew.bottom / 2), 0, 0, SWP_NOSIZE);
 
+        hwndProduct = GetDlgItem(hDlg, IDC_QUNO_PRODUCT);
+        hOldFont = (HFONT)SendMessage(hwndProduct, WM_GETFONT, 0, 0);
+        GetObject(hOldFont, sizeof(LOGFONT), (LPVOID)&lf);
+        lf.lfWeight = FW_BOLD;
+        _hBoldFont = CreateFontIndirect(&lf);
+        SendMessage(hwndProduct, WM_SETFONT, (WPARAM)_hBoldFont, 0);
+
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
         {
+            DeleteObject(_hBoldFont);
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
         }
