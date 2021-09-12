@@ -8,8 +8,8 @@
 #define MAX_LOADSTRING 128
 
 HINSTANCE _hInstance;
-WCHAR _szWindowTitle[MAX_LOADSTRING];
-WCHAR _szWindowClass[MAX_LOADSTRING];
+TCHAR _szWindowTitle[MAX_LOADSTRING];
+TCHAR _szWindowClass[MAX_LOADSTRING];
 HFONT _hBoldFont;
 
 ATOM RegisterWndClass(HINSTANCE);
@@ -17,9 +17,9 @@ BOOL InitInstance(HINSTANCE, INT);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK OptionsDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
-BOOL GetFileVersionString(LPWSTR, LPWSTR, LPWSTR, UINT);
+BOOL GetFileVersionString(LPTSTR, LPTSTR, LPTSTR, UINT);
 
-WCHAR _szDefaultPlayerName[MAX_LOADSTRING];
+TCHAR _szDefaultPlayerName[MAX_LOADSTRING];
 UINT _nDefaultComputerPlayers = 3;
 
 struct LANGUAGEANDCODEPAGE
@@ -28,7 +28,7 @@ struct LANGUAGEANDCODEPAGE
     WORD wCodePage;
 };
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPWSTR lpCmdLine, _In_ INT nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPTSTR lpCmdLine, _In_ INT nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPreviousInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -281,7 +281,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
     return (INT_PTR)FALSE;
 }
 
-BOOL GetFileVersionString(LPWSTR lpModule, LPWSTR lpKey, LPWSTR lpValue, UINT uMaxValue)
+BOOL GetFileVersionString(LPTSTR lpModule, LPTSTR lpKey, LPTSTR lpValue, UINT uMaxValue)
 {
     BOOL bReturn = FALSE;
 
@@ -303,11 +303,11 @@ BOOL GetFileVersionString(LPWSTR lpModule, LPWSTR lpKey, LPWSTR lpValue, UINT uM
 
                 if (bResult && (uLanguageLen > 0))
                 {
-                    WCHAR szSubBlock[MAX_PATH];
+                    TCHAR szSubBlock[MAX_PATH];
                     wsprintf(szSubBlock, _T("\\StringFileInfo\\%04x%04x\\"), pLanguage[0].wLanguage, pLanguage[0].wCodePage);
                     lstrcat(szSubBlock, lpKey);
 
-                    LPWSTR lpBuffer;
+                    LPTSTR lpBuffer;
                     bResult = VerQueryValue(pBlock, szSubBlock, (LPVOID*)&lpBuffer, &uMaxValue);
 
                     if (bResult && (uMaxValue > 0))
