@@ -12,6 +12,9 @@
 #define Q_DEFAULT_WINDOW_HEIGHT 768
 #define Q_MIN_WINDOW_WIDTH  500
 #define Q_MIN_WINDOW_HEIGHT 375
+#define Q_REGISTRY_KEY_ROOT                         L"Software\\Mooville\\QUno\\2.5"
+#define Q_REGISTRY_VALUE_DEFAULTPLAYERNAME          L"DefaultPlayerName"
+#define Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS     L"DefaultComputerPlayers"
 
 HINSTANCE _hInstance;
 TCHAR _szWindowTitle[MAX_LOADSTRING];
@@ -51,8 +54,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
         return FALSE;
     }
 
-    // TODO If the Registry key and values exist, read in the defaults.
-    LoadString(hInstance, IDS_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
+    HKEY hkResult;
+    RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hkResult);
+
+    DWORD cbString = sizeof(_szDefaultPlayerName);
+    LSTATUS lResult = RegGetValue(hkResult, NULL, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, RRF_RT_REG_SZ, NULL, _szDefaultPlayerName, &cbString);
+
+    if (lResult != ERROR_SUCCESS)
+    {
+        LoadString(hInstance, IDS_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
+    }
+
+    DWORD cbUint = sizeof(UINT);
+    lResult = RegGetValue(hkResult, NULL, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, RRF_RT_REG_DWORD, NULL, &_nDefaultComputerPlayers, &cbUint);
 
     HACCEL hAccelerators = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_QUNOCLASSIC));
     MSG msg;
@@ -216,7 +230,14 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
         {
             if (IsDefaultPlayerNameValid(hDlg) && IsDefaultComputerPlayersValid(hDlg))
             {
-                // TODO Save the global values to the Registry.
+                HKEY hkResult;
+                RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hkResult);
+
+                DWORD cbString = sizeof(_szDefaultPlayerName);
+                LSTATUS lResult = RegSetValueEx(hkResult, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, 0, REG_SZ, (BYTE*)_szDefaultPlayerName, cbString);
+                DWORD cbUint = sizeof(UINT);
+                lResult = RegSetValueEx(hkResult, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, 0, REG_DWORD, (BYTE*)&_nDefaultComputerPlayers, cbUint);
+
                 EndDialog(hDlg, LOWORD(wParam));
             }
             else
