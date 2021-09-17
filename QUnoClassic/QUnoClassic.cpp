@@ -10,6 +10,8 @@
 #define Q_LIB_MODULE L"QUNOLIB.DLL"
 #define Q_DEFAULT_WINDOW_WIDTH  1024
 #define Q_DEFAULT_WINDOW_HEIGHT 768
+#define Q_MIN_WINDOW_WIDTH  500
+#define Q_MIN_WINDOW_HEIGHT 375
 
 HINSTANCE _hInstance;
 TCHAR _szWindowTitle[MAX_LOADSTRING];
@@ -107,7 +109,9 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // TODO Handle WM_RESIZE to preven sizing below a mininum.
+    LPRECT lpRect;
+    UINT nCurrentWidth;
+    UINT nCurrentHeight;
 
     switch (message)
     {
@@ -143,6 +147,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
         break;
+
+    case WM_SIZING:
+        lpRect = (LPRECT)lParam;
+        nCurrentWidth = lpRect->right - lpRect->left;
+        nCurrentHeight = lpRect->bottom - lpRect->top;
+
+        if (nCurrentWidth <= Q_MIN_WINDOW_WIDTH)
+        {
+            lpRect->right = lpRect->left + Q_MIN_WINDOW_WIDTH;
+        }
+
+        if (nCurrentHeight <= Q_MIN_WINDOW_HEIGHT)
+        {
+            lpRect->bottom = lpRect->top + Q_MIN_WINDOW_HEIGHT;
+        }
+
+        return TRUE;
 
     case WM_PAINT:
     {
