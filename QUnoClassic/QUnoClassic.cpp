@@ -20,6 +20,8 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK OptionsDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 BOOL GetFileVersionString(LPTSTR, LPTSTR, LPTSTR, UINT);
+BOOL IsDefaultPlayerNameValid(HWND);
+BOOL IsDefaultComputerPlayersValid(HWND);
 
 TCHAR _szDefaultPlayerName[MAX_LOADSTRING];
 UINT _nDefaultComputerPlayers = 3;
@@ -85,6 +87,7 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
 {
    _hInstance = hInstance;
 
+   // TODO Set a more sensible default size.
    HWND hWnd = CreateWindowW(_szWindowClass, _szWindowTitle, WS_OVERLAPPEDWINDOW, 
        CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
@@ -101,6 +104,8 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    // TODO Handle WM_RESIZE to preven sizing below a mininum.
+
     switch (message)
     {
     case WM_COMMAND:
@@ -199,26 +204,15 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
     case WM_COMMAND:
         if (LOWORD(wParam) == IDOK)
         {
-            // TODO Validate the values in the edit controls:
-            //      Not null or empty
-            //      For name, trim it
-            //      For name, not longer than MAX_LOADSTRING
-            //      For number, must be parsable as unsigned int
-            //      For number, greater than 0 and less than 9
-            GetDlgItemText(hDlg, IDC_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
-            BOOL bTranslated;
-            UINT nResult = GetDlgItemInt(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, &bTranslated, FALSE);
-
-            if (bTranslated == TRUE)
+            if (IsDefaultPlayerNameValid(hDlg) && IsDefaultComputerPlayersValid(hDlg))
             {
-                _nDefaultComputerPlayers = nResult;
+                // TODO Save the global values to the Registry.
+                EndDialog(hDlg, LOWORD(wParam));
             }
-
-            // TODO If validations fail, show a message box.
-            //      If validations succeed, copy the values to the global defaults.
-            //      Save te values to the Registry (create the key if it doesn't exist).
-           
-            EndDialog(hDlg, LOWORD(wParam));
+            else
+            {
+                MessageBox(hDlg, L"Please enter a player name and a number of computer players between 1 and 9.", _szWindowTitle, MB_ICONWARNING | MB_OK);
+            }
 
             return (INT_PTR)TRUE;
         }
@@ -232,6 +226,36 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
     }
 
     return (INT_PTR)FALSE;
+}
+
+BOOL IsDefaultPlayerNameValid(HWND hDlg)
+{
+    BOOL bIsValid = FALSE;
+    TCHAR szDefaultPlayerName[MAX_LOADSTRING];
+    GetDlgItemText(hDlg, IDC_DEFAULTPLAYERNAME, szDefaultPlayerName, MAX_LOADSTRING);
+
+    if (lstrlen(szDefaultPlayerName) > 0)
+    {
+        lstrcpy(_szDefaultPlayerName, szDefaultPlayerName);
+        bIsValid = TRUE;
+    }
+
+    return bIsValid;
+}
+
+BOOL IsDefaultComputerPlayersValid(HWND hDlg)
+{
+    BOOL bIsValid = FALSE;
+    BOOL bTranslated;
+    UINT nResult = GetDlgItemInt(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, &bTranslated, FALSE);
+
+    if ((bTranslated == TRUE) && ((nResult > 0) && (nResult <= 9)))
+    {
+        _nDefaultComputerPlayers = nResult;
+        bIsValid = TRUE;
+    }
+
+    return bIsValid;
 }
 
 INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
