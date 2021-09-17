@@ -19,6 +19,7 @@ BOOL InitInstance(HINSTANCE, INT);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK OptionsDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
+VOID CenterDialogBox(HWND);
 BOOL GetFileVersionString(LPTSTR, LPTSTR, LPTSTR, UINT);
 BOOL IsDefaultPlayerNameValid(HWND);
 BOOL IsDefaultComputerPlayersValid(HWND);
@@ -167,24 +168,10 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 {
     UNREFERENCED_PARAMETER(lParam);
 
-    RECT rcOwner;
-    RECT rcDlg;
-    RECT rcNew;
-    HWND hwndOwner;
-
     switch (message)
     {
     case WM_INITDIALOG:
-        hwndOwner = GetParent(hDlg);
-        GetWindowRect(hwndOwner, &rcOwner);
-        GetWindowRect(hDlg, &rcDlg);
-        
-        CopyRect(&rcNew, &rcOwner);
-        OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
-        OffsetRect(&rcNew, -rcNew.left, -rcNew.top);
-        OffsetRect(&rcNew, -rcDlg.right, -rcDlg.bottom);
-
-        SetWindowPos(hDlg, HWND_TOP, rcOwner.left + (rcNew.right / 2), rcOwner.top + (rcNew.bottom / 2), 0, 0, SWP_NOSIZE);
+        CenterDialogBox(hDlg);
 
         // TODO Create an up-down control rather than a plain edit control 
         //      for the default number of computer players.
@@ -264,10 +251,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 {
     UNREFERENCED_PARAMETER(lParam);
 
-    RECT rcOwner;
-    RECT rcDlg;
-    RECT rcNew;
-    HWND hwndOwner;
     HWND hwndProduct;
     HFONT hOldFont;
     LOGFONT lf;
@@ -276,16 +259,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
     switch (message)
     {
     case WM_INITDIALOG:
-        hwndOwner = GetParent(hDlg);
-        GetWindowRect(hwndOwner, &rcOwner);
-        GetWindowRect(hDlg, &rcDlg);
-        
-        CopyRect(&rcNew, &rcOwner);
-        OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
-        OffsetRect(&rcNew, -rcNew.left, -rcNew.top);
-        OffsetRect(&rcNew, -rcDlg.right, -rcDlg.bottom);
-
-        SetWindowPos(hDlg, HWND_TOP, rcOwner.left + (rcNew.right / 2), rcOwner.top + (rcNew.bottom / 2), 0, 0, SWP_NOSIZE);
+        CenterDialogBox(hDlg);
 
         hwndProduct = GetDlgItem(hDlg, IDC_QUNO_PRODUCT);
         hOldFont = (HFONT)SendMessage(hwndProduct, WM_GETFONT, 0, 0);
@@ -337,6 +311,26 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
     }
 
     return (INT_PTR)FALSE;
+}
+
+VOID CenterDialogBox(HWND hDlg)
+{
+    RECT rcOwner;
+    RECT rcDlg;
+    RECT rcNew;
+
+    HWND hwndOwner = GetParent(hDlg);
+    GetWindowRect(hwndOwner, &rcOwner);
+    GetWindowRect(hDlg, &rcDlg);
+    
+    CopyRect(&rcNew, &rcOwner);
+    OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
+    OffsetRect(&rcNew, -rcNew.left, -rcNew.top);
+    OffsetRect(&rcNew, -rcDlg.right, -rcDlg.bottom);
+
+    SetWindowPos(hDlg, HWND_TOP, rcOwner.left + (rcNew.right / 2), rcOwner.top + (rcNew.bottom / 2), 0, 0, SWP_NOSIZE);
+
+    return;
 }
 
 BOOL GetFileVersionString(LPTSTR lpModule, LPTSTR lpKey, LPTSTR lpValue, UINT uMaxValue)
