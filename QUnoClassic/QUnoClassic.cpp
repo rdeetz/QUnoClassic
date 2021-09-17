@@ -8,6 +8,8 @@
 #define MAX_LOADSTRING 128
 #define Q_FILEVERSION L"FileVersion"
 #define Q_LIB_MODULE L"QUNOLIB.DLL"
+#define Q_DEFAULT_WINDOW_WIDTH  1024
+#define Q_DEFAULT_WINDOW_HEIGHT 768
 
 HINSTANCE _hInstance;
 TCHAR _szWindowTitle[MAX_LOADSTRING];
@@ -81,16 +83,16 @@ ATOM RegisterWndClass(HINSTANCE hInstance)
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_QUNOCLASSIC);
     wcex.lpszClassName  = _szWindowClass;
 
-    return RegisterClassExW(&wcex);
+    return RegisterClassEx(&wcex);
 }
 
 BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
 {
    _hInstance = hInstance;
 
-   // TODO Set a more sensible default size.
-   HWND hWnd = CreateWindowW(_szWindowClass, _szWindowTitle, WS_OVERLAPPEDWINDOW, 
-       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+   HWND hWnd = CreateWindow(_szWindowClass, _szWindowTitle, WS_OVERLAPPEDWINDOW, 
+    CW_USEDEFAULT, CW_USEDEFAULT, Q_DEFAULT_WINDOW_WIDTH, Q_DEFAULT_WINDOW_HEIGHT, 
+    nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
