@@ -6,6 +6,7 @@
 #define IDD_QUNOCLASSIC_DIALOG          102
 #define IDS_QUNO                        103
 #define IDS_DEFAULTPLAYERNAME           104
+#define IDS_ERROR_OPTIONS               105
 #define IDD_ABOUTDLG                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105

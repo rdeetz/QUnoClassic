@@ -211,7 +211,9 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
             }
             else
             {
-                MessageBox(hDlg, L"Please enter a player name and a number of computer players between 1 and 9.", _szWindowTitle, MB_ICONWARNING | MB_OK);
+                TCHAR szError[MAX_LOADSTRING];
+                LoadString(_hInstance, IDS_ERROR_OPTIONS, szError, MAX_LOADSTRING);
+                MessageBox(hDlg, szError, _szWindowTitle, MB_ICONWARNING | MB_OK);
             }
 
             return (INT_PTR)TRUE;
