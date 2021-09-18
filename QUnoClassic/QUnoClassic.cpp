@@ -5,13 +5,13 @@
 #include "QUnoClassic.h"
 #include "QUnoLib.h"
 
-#define MAX_LOADSTRING 128
-#define Q_FILEVERSION L"FileVersion"
-#define Q_LIB_MODULE L"QUNOLIB.DLL"
-#define Q_DEFAULT_WINDOW_WIDTH  1024
-#define Q_DEFAULT_WINDOW_HEIGHT 768
-#define Q_MIN_WINDOW_WIDTH  500
-#define Q_MIN_WINDOW_HEIGHT 375
+#define MAX_LOADSTRING                              128
+#define Q_FILEVERSION                               L"FileVersion"
+#define Q_MODULE_LIB                                L"QUNOLIB.DLL"
+#define Q_WINDOW_WIDTH_DEFAULT                      1024
+#define Q_WINDOW_HEIGHT_DEFAULT                     768
+#define Q_WINDOW_WIDTH_MIN                          500
+#define Q_WINDOW_HEIGHT_MIN                         375
 #define Q_REGISTRY_KEY_ROOT                         L"Software\\Mooville\\QUno\\2.5"
 #define Q_REGISTRY_VALUE_DEFAULTPLAYERNAME          L"DefaultPlayerName"
 #define Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS     L"DefaultComputerPlayers"
@@ -27,6 +27,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK OptionsDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 VOID CenterDialogBox(HWND);
+VOID SetDlgItemVersion(HWND, UINT, LPTSTR);
 BOOL GetFileVersionString(LPTSTR, LPTSTR, LPTSTR, UINT);
 BOOL IsDefaultPlayerNameValid(HWND);
 BOOL IsDefaultComputerPlayersValid(HWND);
@@ -40,7 +41,7 @@ struct LANGUAGEANDCODEPAGE
     WORD wCodePage;
 };
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPTSTR lpCmdLine, _In_ INT nCmdShow)
+INT APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPTSTR lpCmdLine, _In_ INT nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPreviousInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -49,16 +50,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
     LoadString(hInstance, IDC_QUNOCLASSIC, _szWindowClass, MAX_LOADSTRING);
     RegisterWndClass(hInstance);
 
-    if (!InitInstance (hInstance, nCmdShow))
+    if (!InitInstance(hInstance, nCmdShow))
     {
         return FALSE;
     }
 
-    HKEY hkResult;
-    RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hkResult);
+    HKEY hKey;
+    RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hKey);
 
     DWORD cbString = sizeof(_szDefaultPlayerName);
-    LSTATUS lResult = RegGetValue(hkResult, NULL, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, RRF_RT_REG_SZ, NULL, _szDefaultPlayerName, &cbString);
+    LSTATUS lResult = RegGetValue(hKey, NULL, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, RRF_RT_REG_SZ, NULL, _szDefaultPlayerName, &cbString);
 
     if (lResult != ERROR_SUCCESS)
     {
@@ -66,7 +67,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
     }
 
     DWORD cbUint = sizeof(UINT);
-    lResult = RegGetValue(hkResult, NULL, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, RRF_RT_REG_DWORD, NULL, &_nDefaultComputerPlayers, &cbUint);
+    lResult = RegGetValue(hKey, NULL, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, RRF_RT_REG_DWORD, NULL, &_nDefaultComputerPlayers, &cbUint);
 
     HACCEL hAccelerators = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_QUNOCLASSIC));
     MSG msg;
@@ -106,9 +107,18 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
 {
    _hInstance = hInstance;
 
-   HWND hWnd = CreateWindow(_szWindowClass, _szWindowTitle, WS_OVERLAPPEDWINDOW, 
-    CW_USEDEFAULT, CW_USEDEFAULT, Q_DEFAULT_WINDOW_WIDTH, Q_DEFAULT_WINDOW_HEIGHT, 
-    nullptr, nullptr, hInstance, nullptr);
+   HWND hWnd = CreateWindow(
+       _szWindowClass, 
+       _szWindowTitle, 
+       WS_OVERLAPPEDWINDOW, 
+       CW_USEDEFAULT, 
+       CW_USEDEFAULT, 
+       Q_WINDOW_WIDTH_DEFAULT, 
+       Q_WINDOW_HEIGHT_DEFAULT, 
+       NULL, 
+       NULL, 
+       hInstance, 
+       NULL);
 
    if (!hWnd)
    {
@@ -137,11 +147,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case IDM_NEW:
             // TODO Start a new game.
-            //      Create players: 1 human, 3 computer
-            //      Create a game.
-            //      Add players to game.
-            //      Start game.
-
             break;
 
         case IDM_OPTIONS:
@@ -167,14 +172,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         nCurrentWidth = lpRect->right - lpRect->left;
         nCurrentHeight = lpRect->bottom - lpRect->top;
 
-        if (nCurrentWidth <= Q_MIN_WINDOW_WIDTH)
+        if (nCurrentWidth <= Q_WINDOW_WIDTH_MIN)
         {
-            lpRect->right = lpRect->left + Q_MIN_WINDOW_WIDTH;
+            lpRect->right = lpRect->left + Q_WINDOW_WIDTH_MIN;
         }
 
-        if (nCurrentHeight <= Q_MIN_WINDOW_HEIGHT)
+        if (nCurrentHeight <= Q_WINDOW_HEIGHT_MIN)
         {
-            lpRect->bottom = lpRect->top + Q_MIN_WINDOW_HEIGHT;
+            lpRect->bottom = lpRect->top + Q_WINDOW_HEIGHT_MIN;
         }
 
         return TRUE;
@@ -210,15 +215,9 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
     case WM_INITDIALOG:
         CenterDialogBox(hDlg);
 
-        // TODO Create an up-down control rather than a plain edit control 
-        //      for the default number of computer players.
-        //      https://docs.microsoft.com/en-us/windows/win32/controls/create-an-up-down-control
-        //
-        //      1. Include commctrl.h
-        //      2. Link with commctl.lib (and specify the manifest?)
-        //      3. Get HWND of the edit control IDC_DEFAULTCOMPUTERPLAYERS in WM_INITDIALOG via GetDlgItem?
-        //      4. Create the up-down control as in the example, but don't set UDS_AUTOBUDDY
-        //      5. Set the buddy window via SendMessage(UDM_SETBUDDY, hwndEdit)
+        // Create an up-down control rather than a plain edit control 
+        // for the default number of computer players.
+        // https://docs.microsoft.com/en-us/windows/win32/controls/create-an-up-down-control
 
         SetDlgItemText(hDlg, IDC_DEFAULTPLAYERNAME, _szDefaultPlayerName);
         SetDlgItemInt(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, _nDefaultComputerPlayers, FALSE);
@@ -230,13 +229,13 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
         {
             if (IsDefaultPlayerNameValid(hDlg) && IsDefaultComputerPlayersValid(hDlg))
             {
-                HKEY hkResult;
-                RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hkResult);
+                HKEY hKey;
+                RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hKey);
 
                 DWORD cbString = sizeof(_szDefaultPlayerName);
-                LSTATUS lResult = RegSetValueEx(hkResult, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, 0, REG_SZ, (BYTE*)_szDefaultPlayerName, cbString);
+                LSTATUS lResult = RegSetValueEx(hKey, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, 0, REG_SZ, (BYTE*)_szDefaultPlayerName, cbString);
                 DWORD cbUint = sizeof(UINT);
-                lResult = RegSetValueEx(hkResult, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, 0, REG_DWORD, (BYTE*)&_nDefaultComputerPlayers, cbUint);
+                lResult = RegSetValueEx(hKey, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, 0, REG_DWORD, (BYTE*)&_nDefaultComputerPlayers, cbUint);
 
                 EndDialog(hDlg, LOWORD(wParam));
             }
@@ -298,7 +297,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
     HWND hwndProduct;
     HFONT hOldFont;
     LOGFONT lf;
-    BOOL bResult;
 
     switch (message)
     {
@@ -312,34 +310,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         _hBoldFont = CreateFontIndirect(&lf);
         SendMessage(hwndProduct, WM_SETFONT, (WPARAM)_hBoldFont, 0);
 
-        TCHAR szProductVersion1[MAX_LOADSTRING];
-        GetDlgItemText(hDlg, IDC_QUNO_VERSION, szProductVersion1, MAX_LOADSTRING);
-
         TCHAR szModule[MAX_PATH];
         GetModuleFileName(NULL, szModule, MAX_PATH);
-
-        TCHAR szProductVersion[MAX_LOADSTRING];
-        bResult = GetFileVersionString(szModule, (LPTSTR)Q_FILEVERSION, szProductVersion, MAX_LOADSTRING);
-
-        if (bResult)
-        {
-            TCHAR szProductvVersion2[MAX_LOADSTRING];
-            wsprintf(szProductvVersion2, szProductVersion1, szProductVersion);
-            SetDlgItemText(hDlg, IDC_QUNO_VERSION, szProductvVersion2);
-        }
-
-        TCHAR szLibraryVersion1[MAX_LOADSTRING];
-        GetDlgItemText(hDlg, IDC_QUNOLIB_VERSION, szLibraryVersion1, MAX_LOADSTRING);
-
-        TCHAR szLibraryVersion[MAX_LOADSTRING];
-        bResult = GetFileVersionString((LPTSTR)Q_LIB_MODULE, (LPTSTR)Q_FILEVERSION, szLibraryVersion, MAX_LOADSTRING);
-
-        if (bResult)
-        {
-            TCHAR szLibraryVersion2[MAX_LOADSTRING];
-            wsprintf(szLibraryVersion2, szLibraryVersion1, szLibraryVersion);
-            SetDlgItemText(hDlg, IDC_QUNOLIB_VERSION, szLibraryVersion2);
-        }
+        SetDlgItemVersion(hDlg, IDC_QUNO_VERSION, szModule);
+        SetDlgItemVersion(hDlg, IDC_QUNOLIB_VERSION, (LPTSTR)Q_MODULE_LIB);
 
         return (INT_PTR)TRUE;
 
@@ -373,6 +347,24 @@ VOID CenterDialogBox(HWND hDlg)
     OffsetRect(&rcNew, -rcDlg.right, -rcDlg.bottom);
 
     SetWindowPos(hDlg, HWND_TOP, rcOwner.left + (rcNew.right / 2), rcOwner.top + (rcNew.bottom / 2), 0, 0, SWP_NOSIZE);
+
+    return;
+}
+
+VOID SetDlgItemVersion(HWND hDlg, UINT nDlgItem, LPTSTR lpModule)
+{
+    TCHAR szTemplate[MAX_LOADSTRING];
+    GetDlgItemText(hDlg, nDlgItem, szTemplate, MAX_LOADSTRING);
+
+    TCHAR szVersion[MAX_LOADSTRING];
+    BOOL bResult = GetFileVersionString(lpModule, (LPTSTR)Q_FILEVERSION, szVersion, MAX_LOADSTRING);
+
+    if (bResult)
+    {
+        TCHAR szFinal[MAX_LOADSTRING];
+        wsprintf(szFinal, szTemplate, szVersion);
+        SetDlgItemText(hDlg, nDlgItem, szFinal);
+    }
 
     return;
 }
