@@ -17,24 +17,23 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
     return TRUE;
 }
 
-INT QuInitialize()
-{
-    return 1;
-}
-
-HPLAYER CreatePlayer(LPWSTR lpPlayerName, BOOL bIsHuman)
+HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
 {
     return NULL;
 }
 
-BOOL AddCardToPlayer(HPLAYER hPlayer, CARD* card)
+BOOL AddCardToPlayer(HPLAYER hPlayer, CARD card)
 {
     return TRUE;
 }
 
-CARD* RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex)
+CARD RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex)
 {
-    return NULL;
+    CARD card;
+    card.color = CARD_COLOR_WILD;
+    card.value = CARD_VALUE_WILD;
+
+    return card;
 }
 
 HGAME CreateGame()

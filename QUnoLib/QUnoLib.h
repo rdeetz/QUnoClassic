@@ -41,25 +41,23 @@ typedef struct _tagCARD
 
 typedef struct _tagPLAYER
 {
-    LPWSTR lpPlayerName;
+    LPTSTR lpPlayerName;
     BOOL bIsHuman;
-    CARD* lpCards;
+    CARD* pCards;
 } PLAYER;
 
 typedef struct _tagGAME
 {
     // TODO Deck
-    PLAYER* lpPlayers;
+    PLAYER* pPlayers;
 } GAME;
 
-typedef HANDLE HGAME;
-typedef HANDLE HPLAYER;
+typedef PLAYER* HPLAYER;
+typedef GAME* HGAME;
 
-extern "C" QUNOLIB_API INT QuInitialize();
-
-extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPWSTR lpPlayerName, BOOL bIsHuman);
-extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, CARD* card);
-extern "C" QUNOLIB_API CARD* RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex);
+extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman);
+extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, CARD card);
+extern "C" QUNOLIB_API CARD RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex);
 
 extern "C" QUNOLIB_API HGAME CreateGame();
 
