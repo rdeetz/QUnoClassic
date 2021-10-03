@@ -6,6 +6,8 @@
 
 HANDLE _hProcessHeap;
 
+VOID AcquireProcessHeap();
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
     switch (dwReason)
@@ -21,20 +23,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 
 HGAME CreateGame()
 {
-    if (_hProcessHeap == NULL)
-    {
-        _hProcessHeap = GetProcessHeap();
-    }
+    AcquireProcessHeap();
 
     return (HGAME)HeapAlloc(_hProcessHeap, HEAP_ZERO_MEMORY, sizeof(GAME));
 }
 
 BOOL DestroyGame(HGAME hGame)
 {
-    if (_hProcessHeap == NULL)
-    {
-        _hProcessHeap = GetProcessHeap();
-    }
+    AcquireProcessHeap();
 
     for (int i = 0; i < GAME_PLAYERS_MAX; i++)
     {
@@ -49,10 +45,7 @@ BOOL DestroyGame(HGAME hGame)
 
 HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
 {
-    if (_hProcessHeap == NULL)
-    {
-        _hProcessHeap = GetProcessHeap();
-    }
+    AcquireProcessHeap();
 
     HPLAYER player = (HPLAYER)HeapAlloc(_hProcessHeap, HEAP_ZERO_MEMORY, sizeof(PLAYER));
     lstrcpy(player->szPlayerName, lpPlayerName);
@@ -64,6 +57,16 @@ HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
 VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
 {
     hGame->players[nPlayerIndex] = hPlayer;
+
+    return;
+}
+
+VOID AcquireProcessHeap()
+{
+    if (_hProcessHeap == NULL)
+    {
+        _hProcessHeap = GetProcessHeap();
+    }
 
     return;
 }

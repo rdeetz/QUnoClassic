@@ -16,10 +16,19 @@
 #define Q_REGISTRY_VALUE_DEFAULTPLAYERNAME          L"DefaultPlayerName"
 #define Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS     L"DefaultComputerPlayers"
 
+struct LANGUAGEANDCODEPAGE
+{
+    WORD wLanguage;
+    WORD wCodePage;
+};
+
 HINSTANCE _hInstance;
 TCHAR _szWindowTitle[MAX_LOADSTRING];
 TCHAR _szWindowClass[MAX_LOADSTRING];
 HFONT _hBoldFont;
+TCHAR _szDefaultPlayerName[MAX_LOADSTRING];
+UINT _nDefaultComputerPlayers = 3;
+HGAME _hActiveGame;
 
 ATOM RegisterWndClass(HINSTANCE);
 BOOL InitInstance(HINSTANCE, INT);
@@ -33,16 +42,6 @@ BOOL IsDefaultPlayerNameValid(HWND);
 BOOL IsDefaultComputerPlayersValid(HWND);
 VOID StartGame();
 VOID StopGame();
-
-TCHAR _szDefaultPlayerName[MAX_LOADSTRING];
-UINT _nDefaultComputerPlayers = 3;
-HGAME _hActiveGame;
-
-struct LANGUAGEANDCODEPAGE
-{
-    WORD wLanguage;
-    WORD wCodePage;
-};
 
 INT APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPTSTR lpCmdLine, _In_ INT nCmdShow)
 {
