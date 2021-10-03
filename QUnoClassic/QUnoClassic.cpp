@@ -421,7 +421,6 @@ VOID StartGame()
 {
     _hActiveGame = CreateGame();
 
-    /*
     HPLAYER hHumanPlayer = CreatePlayer(_szDefaultPlayerName, TRUE);
     AddPlayerToGame(_hActiveGame, hHumanPlayer);
 
@@ -433,7 +432,6 @@ VOID StartGame()
         HPLAYER hComputerPlayer = CreatePlayer(szComputerPlayerName, FALSE);
         AddPlayerToGame(_hActiveGame, hComputerPlayer);
     }
-    */
 
     // TODO Deal the game.
     

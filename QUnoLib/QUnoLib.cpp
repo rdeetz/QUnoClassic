@@ -36,25 +36,25 @@ BOOL DestroyGame(HGAME hGame)
         _hProcessHeap = GetProcessHeap();
     }
 
-    /*
-    for (int i = 0; i < GAME_PLAYERS_MAX; i++)
+    for (int i = 0; i < GAME_PLAYERS_MAX; i++) // TODO Keep track of the number of players.
     {
         if (&hGame->players[i] != NULL)
         {
-            HeapFree(hHeap, 0, &hGame->players[i]);
+            HeapFree(_hProcessHeap, 0, &hGame->players[i]);
         }
     }
-    */
 
     return HeapFree(_hProcessHeap, 0, (LPVOID)hGame);
 }
 
-/*
 HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
 {
-    HANDLE hHeap = GetProcessHeap();
-    HPLAYER player = (HPLAYER)HeapAlloc(hHeap, HEAP_ZERO_MEMORY, sizeof(PLAYER));
+    if (_hProcessHeap == NULL)
+    {
+        _hProcessHeap = GetProcessHeap();
+    }
 
+    HPLAYER player = (HPLAYER)HeapAlloc(_hProcessHeap, HEAP_ZERO_MEMORY, sizeof(PLAYER));
     lstrcpy(player->szPlayerName, lpPlayerName);
     player->bIsHuman = bIsHuman;
 
@@ -63,14 +63,13 @@ HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
 
 VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
 {
-    for (int i = 0; i < GAME_PLAYERS_MAX; i++)
+    for (int i = 0; i < GAME_PLAYERS_MAX; i++) // TODO Keep track of the number of players.
     {
         if (&hGame->players[i] == NULL)
         {
-            hGame->players[i] = *hPlayer;
+            hGame->players[i] = hPlayer;
         }
     }
 
     return;
 }
-*/
