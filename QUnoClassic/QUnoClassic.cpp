@@ -423,11 +423,11 @@ VOID StartGame()
     HPLAYER hHumanPlayer = CreatePlayer(_szDefaultPlayerName, TRUE);
     AddPlayerToGame(_hActiveGame, hHumanPlayer, 0);
 
+    TCHAR szPlayerNameTemplate[MAX_LOADSTRING];
+    LoadString(_hInstance, IDS_TEMPLATEPLAYERNAME, szPlayerNameTemplate, MAX_LOADSTRING);
+
     for (UINT i = 0; i < _nDefaultComputerPlayers - 1; i++)
     {
-        TCHAR szPlayerNameTemplate[MAX_LOADSTRING];
-        LoadString(_hInstance, IDS_TEMPLATEPLAYERNAME, szPlayerNameTemplate, MAX_LOADSTRING);
-
         TCHAR szComputerPlayerName[MAX_LOADSTRING];
         wsprintf(szComputerPlayerName, szPlayerNameTemplate, i + 2);
 
