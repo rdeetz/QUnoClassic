@@ -12,6 +12,7 @@
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
 #define IDM_NEW                         106
+#define IDM_END                         107
 #define IDM_OPTIONS                     110
 #define IDD_OPTIONSDLG                  111
 #define IDC_DEFAULTPLAYERNAME           112

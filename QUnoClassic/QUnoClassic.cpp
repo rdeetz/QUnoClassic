@@ -149,6 +149,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case IDM_NEW:
             StartGame();
+            InvalidateRect(hWnd, NULL, TRUE);
+            break;
+
+        case IDM_END:
+            StopGame();
+            InvalidateRect(hWnd, NULL, TRUE);
             break;
 
         case IDM_OPTIONS:
@@ -192,7 +198,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
-        // TODO Draw here.
+        if (_hCurrentGame != NULL)
+        {
+            // TODO Game in progress, draw it.
+            TextOut(hdc, 100, 100, L"Game in progress!", 17);
+        }
+        else
+        {
+            // TODO Game not in progress, draw the empty state
+            TextOut(hdc, 100, 100, L"Game not in progress", 20);
+        }
 
         EndPaint(hWnd, &ps);
     }
@@ -426,13 +441,13 @@ VOID StartGame()
     TCHAR szPlayerNameTemplate[MAX_LOADSTRING];
     LoadString(_hInstance, IDS_TEMPLATEPLAYERNAME, szPlayerNameTemplate, MAX_LOADSTRING);
 
-    for (UINT i = 0; i < _nDefaultComputerPlayers - 1; i++)
+    for (UINT i = 1; i <= _nDefaultComputerPlayers; i++)
     {
         TCHAR szComputerPlayerName[MAX_LOADSTRING];
-        wsprintf(szComputerPlayerName, szPlayerNameTemplate, i + 2);
+        wsprintf(szComputerPlayerName, szPlayerNameTemplate, i + 1);
 
         HPLAYER hComputerPlayer = CreatePlayer(szComputerPlayerName, FALSE);
-        AddPlayerToGame(_hCurrentGame, hComputerPlayer, i + 1);
+        AddPlayerToGame(_hCurrentGame, hComputerPlayer, i);
     }
 
     DealGame(_hCurrentGame);
@@ -443,6 +458,7 @@ VOID StartGame()
 VOID StopGame()
 {
     DestroyGame(_hCurrentGame);
+    _hCurrentGame = NULL;
 
     return;
 }
