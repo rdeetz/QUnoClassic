@@ -63,7 +63,7 @@ typedef GAME* HGAME;
 extern "C" QUNOLIB_API HGAME CreateGame();
 extern "C" QUNOLIB_API BOOL DestroyGame(HGAME hGame);
 extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman);
-extern "C" QUNOLIB_API VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer);
+extern "C" QUNOLIB_API VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex);
 
 /*
 extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, CARD card);

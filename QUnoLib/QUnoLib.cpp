@@ -36,11 +36,11 @@ BOOL DestroyGame(HGAME hGame)
         _hProcessHeap = GetProcessHeap();
     }
 
-    for (int i = 0; i < GAME_PLAYERS_MAX; i++) // TODO Keep track of the number of players.
+    for (int i = 0; i < GAME_PLAYERS_MAX; i++)
     {
         if (&hGame->players[i] != NULL)
         {
-            HeapFree(_hProcessHeap, 0, &hGame->players[i]);
+            HeapFree(_hProcessHeap, 0, (LPVOID)hGame->players[i]);
         }
     }
 
@@ -61,15 +61,9 @@ HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
     return player;
 }
 
-VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
+VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
 {
-    for (int i = 0; i < GAME_PLAYERS_MAX; i++) // TODO Keep track of the number of players.
-    {
-        if (&hGame->players[i] == NULL)
-        {
-            hGame->players[i] = hPlayer;
-        }
-    }
+    hGame->players[nPlayerIndex] = hPlayer;
 
     return;
 }

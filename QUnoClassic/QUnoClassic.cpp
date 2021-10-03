@@ -422,7 +422,7 @@ VOID StartGame()
     _hActiveGame = CreateGame();
 
     HPLAYER hHumanPlayer = CreatePlayer(_szDefaultPlayerName, TRUE);
-    AddPlayerToGame(_hActiveGame, hHumanPlayer);
+    AddPlayerToGame(_hActiveGame, hHumanPlayer, 0);
 
     for (UINT i = 0; i < _nDefaultComputerPlayers - 1; i++)
     {
@@ -430,7 +430,7 @@ VOID StartGame()
         wsprintf(szComputerPlayerName, L"Player %d", i + 2); // TODO This should be a resource.
 
         HPLAYER hComputerPlayer = CreatePlayer(szComputerPlayerName, FALSE);
-        AddPlayerToGame(_hActiveGame, hComputerPlayer);
+        AddPlayerToGame(_hActiveGame, hComputerPlayer, i + 1);
     }
 
     // TODO Deal the game.
