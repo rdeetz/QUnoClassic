@@ -426,8 +426,11 @@ VOID StartGame()
 
     for (UINT i = 0; i < _nDefaultComputerPlayers - 1; i++)
     {
+        TCHAR szPlayerNameTemplate[MAX_LOADSTRING];
+        LoadString(_hInstance, IDS_TEMPLATEPLAYERNAME, szPlayerNameTemplate, MAX_LOADSTRING);
+
         TCHAR szComputerPlayerName[MAX_LOADSTRING];
-        wsprintf(szComputerPlayerName, L"Player %d", i + 2); // TODO This should be a resource.
+        wsprintf(szComputerPlayerName, szPlayerNameTemplate, i + 2);
 
         HPLAYER hComputerPlayer = CreatePlayer(szComputerPlayerName, FALSE);
         AddPlayerToGame(_hActiveGame, hComputerPlayer, i + 1);
