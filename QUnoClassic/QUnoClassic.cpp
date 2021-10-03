@@ -31,9 +31,12 @@ VOID SetDlgItemVersion(HWND, UINT, LPTSTR);
 BOOL GetFileVersionString(LPTSTR, LPTSTR, LPTSTR, UINT);
 BOOL IsDefaultPlayerNameValid(HWND);
 BOOL IsDefaultComputerPlayersValid(HWND);
+VOID StartGame();
+VOID StopGame();
 
 TCHAR _szDefaultPlayerName[MAX_LOADSTRING];
 UINT _nDefaultComputerPlayers = 3;
+HGAME _hActiveGame;
 
 struct LANGUAGEANDCODEPAGE
 {
@@ -146,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wmId)
         {
         case IDM_NEW:
-            // TODO Start a new game.
+            StartGame();
             break;
 
         case IDM_OPTIONS:
@@ -158,6 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
 
         case IDM_EXIT:
+            StopGame();
             DestroyWindow(hWnd);
             break;
 
@@ -281,7 +285,7 @@ BOOL IsDefaultComputerPlayersValid(HWND hDlg)
     BOOL bTranslated;
     UINT nResult = GetDlgItemInt(hDlg, IDC_DEFAULTCOMPUTERPLAYERS, &bTranslated, FALSE);
 
-    if ((bTranslated == TRUE) && ((nResult > 0) && (nResult <= 9)))
+    if ((bTranslated == TRUE) && ((nResult > 0) && (nResult <= GAME_PLAYERS_MAX)))
     {
         _nDefaultComputerPlayers = nResult;
         bIsValid = TRUE;
@@ -411,4 +415,34 @@ BOOL GetFileVersionString(LPTSTR lpModule, LPTSTR lpKey, LPTSTR lpValue, UINT uM
     }
 
     return bReturn;
+}
+
+VOID StartGame()
+{
+    _hActiveGame = CreateGame();
+
+    /*
+    HPLAYER hHumanPlayer = CreatePlayer(_szDefaultPlayerName, TRUE);
+    AddPlayerToGame(_hActiveGame, hHumanPlayer);
+
+    for (UINT i = 0; i < _nDefaultComputerPlayers - 1; i++)
+    {
+        TCHAR szComputerPlayerName[MAX_LOADSTRING];
+        wsprintf(szComputerPlayerName, L"Player %d", i + 2); // TODO This should be a resource.
+
+        HPLAYER hComputerPlayer = CreatePlayer(szComputerPlayerName, FALSE);
+        AddPlayerToGame(_hActiveGame, hComputerPlayer);
+    }
+    */
+
+    // TODO Deal the game.
+    
+    return;
+}
+
+VOID StopGame()
+{
+    DestroyGame(_hActiveGame);
+
+    return;
 }

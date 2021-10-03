@@ -9,7 +9,9 @@
 #define QUNOLIB_API __declspec(dllimport)
 #endif // QUNOLIB_EXPORTS
 
-#define MAX_PLAYER_NAME     128
+#define PLAYER_NAME_MAX     128
+#define PLAYER_CARDS_MAX    16
+#define GAME_PLAYERS_MAX    9
 
 #define CARD_COLOR_WILD     0
 #define CARD_COLOR_RED      1
@@ -41,27 +43,31 @@ typedef struct _tagCARD
 
 typedef struct _tagPLAYER
 {
-    LPTSTR lpPlayerName;
+    TCHAR szPlayerName[PLAYER_NAME_MAX];
     BOOL bIsHuman;
-    CARD* pCards;
+    CARD cards[PLAYER_CARDS_MAX];
+    INT nCardCount;
 } PLAYER;
+
+typedef PLAYER* HPLAYER;
 
 typedef struct _tagGAME
 {
     // TODO Deck
-    PLAYER* pPlayers;
+    HPLAYER players[GAME_PLAYERS_MAX];
+    INT nPlayerCount;
 } GAME;
 
-typedef PLAYER* HPLAYER;
 typedef GAME* HGAME;
 
-extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman);
+extern "C" QUNOLIB_API HGAME CreateGame();
+extern "C" QUNOLIB_API BOOL DestroyGame(HGAME hGame);
+
+//extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman);
+//extern "C" QUNOLIB_API VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer);
+/*
 extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, CARD card);
 extern "C" QUNOLIB_API CARD RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex);
-
-extern "C" QUNOLIB_API HGAME CreateGame();
-
-/*
 extern "C" QUNOLIB_API INT CreateDeck(INT);
 extern "C" QUNOLIB_API INT AddPlayerToGame(INT);
 extern "C" QUNOLIB_API INT StartGame(INT); // shuffle and deal

@@ -4,6 +4,8 @@
 #include "pch.h"
 #include "QUnoLib.h"
 
+HANDLE _hProcessHeap;
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
     switch (dwReason)
@@ -17,26 +19,58 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
     return TRUE;
 }
 
-HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
-{
-    return NULL;
-}
-
-BOOL AddCardToPlayer(HPLAYER hPlayer, CARD card)
-{
-    return TRUE;
-}
-
-CARD RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex)
-{
-    CARD card;
-    card.color = CARD_COLOR_WILD;
-    card.value = CARD_VALUE_WILD;
-
-    return card;
-}
-
 HGAME CreateGame()
 {
-    return NULL;
+    if (_hProcessHeap == NULL)
+    {
+        _hProcessHeap = GetProcessHeap();
+    }
+
+    return (HGAME)HeapAlloc(_hProcessHeap, HEAP_ZERO_MEMORY, sizeof(GAME));
 }
+
+BOOL DestroyGame(HGAME hGame)
+{
+    if (_hProcessHeap == NULL)
+    {
+        _hProcessHeap = GetProcessHeap();
+    }
+
+    /*
+    for (int i = 0; i < GAME_PLAYERS_MAX; i++)
+    {
+        if (&hGame->players[i] != NULL)
+        {
+            HeapFree(hHeap, 0, &hGame->players[i]);
+        }
+    }
+    */
+
+    return HeapFree(_hProcessHeap, 0, (LPVOID)hGame);
+}
+
+/*
+HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
+{
+    HANDLE hHeap = GetProcessHeap();
+    HPLAYER player = (HPLAYER)HeapAlloc(hHeap, HEAP_ZERO_MEMORY, sizeof(PLAYER));
+
+    lstrcpy(player->szPlayerName, lpPlayerName);
+    player->bIsHuman = bIsHuman;
+
+    return player;
+}
+
+VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
+{
+    for (int i = 0; i < GAME_PLAYERS_MAX; i++)
+    {
+        if (&hGame->players[i] == NULL)
+        {
+            hGame->players[i] = *hPlayer;
+        }
+    }
+
+    return;
+}
+*/
