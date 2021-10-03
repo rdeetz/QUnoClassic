@@ -64,11 +64,11 @@ extern "C" QUNOLIB_API HGAME CreateGame();
 extern "C" QUNOLIB_API BOOL DestroyGame(HGAME hGame);
 extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman);
 extern "C" QUNOLIB_API VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex);
+extern "C" QUNOLIB_API VOID DealGame(HGAME hGame);
 
 /*
 extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, CARD card);
 extern "C" QUNOLIB_API CARD RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex);
-extern "C" QUNOLIB_API INT CreateDeck(INT);
 extern "C" QUNOLIB_API INT AddPlayerToGame(INT);
 extern "C" QUNOLIB_API INT StartGame(INT); // shuffle and deal
 extern "C" QUNOLIB_API INT CanPlayCard(INT);
@@ -78,10 +78,6 @@ extern "C" QUNOLIB_API INT DrawCard(INT);
 extern "C" QUNOLIB_API INT GetGameStatus(INT); // current player, wild color, etc
 extern "C" QUNOLIB_API INT IsGameOver(INT);
 extern "C" QUNOLIB_API INT GetGameInfo(INT); // list of players, etc
-
-extern "C" QUNOLIB_API INT Shuffle(INT);
-extern "C" QUNOLIB_API INT Deal(INT);
-
 extern "C" QUNOLIB_API INT ChooseCardToPlay(INT);
 extern "C" QUNOLIB_API INT ChooseWildColor(INT);
 extern "C" QUNOLIB_API INT AddCardToHand(INT);

@@ -61,6 +61,13 @@ VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
     return;
 }
 
+VOID DealGame(HGAME hGame)
+{
+    // TODO Shuffle up and deal.
+
+    return;
+}
+
 VOID AcquireProcessHeap()
 {
     if (_hProcessHeap == NULL)

@@ -28,7 +28,7 @@ TCHAR _szWindowClass[MAX_LOADSTRING];
 HFONT _hBoldFont;
 TCHAR _szDefaultPlayerName[MAX_LOADSTRING];
 UINT _nDefaultComputerPlayers = 3;
-HGAME _hActiveGame;
+HGAME _hCurrentGame;
 
 ATOM RegisterWndClass(HINSTANCE);
 BOOL InitInstance(HINSTANCE, INT);
@@ -418,10 +418,10 @@ BOOL GetFileVersionString(LPTSTR lpModule, LPTSTR lpKey, LPTSTR lpValue, UINT uM
 
 VOID StartGame()
 {
-    _hActiveGame = CreateGame();
+    _hCurrentGame = CreateGame();
 
     HPLAYER hHumanPlayer = CreatePlayer(_szDefaultPlayerName, TRUE);
-    AddPlayerToGame(_hActiveGame, hHumanPlayer, 0);
+    AddPlayerToGame(_hCurrentGame, hHumanPlayer, 0);
 
     TCHAR szPlayerNameTemplate[MAX_LOADSTRING];
     LoadString(_hInstance, IDS_TEMPLATEPLAYERNAME, szPlayerNameTemplate, MAX_LOADSTRING);
@@ -432,17 +432,17 @@ VOID StartGame()
         wsprintf(szComputerPlayerName, szPlayerNameTemplate, i + 2);
 
         HPLAYER hComputerPlayer = CreatePlayer(szComputerPlayerName, FALSE);
-        AddPlayerToGame(_hActiveGame, hComputerPlayer, i + 1);
+        AddPlayerToGame(_hCurrentGame, hComputerPlayer, i + 1);
     }
 
-    // TODO Deal the game.
+    DealGame(_hCurrentGame);
     
     return;
 }
 
 VOID StopGame()
 {
-    DestroyGame(_hActiveGame);
+    DestroyGame(_hCurrentGame);
 
     return;
 }
