@@ -112,7 +112,7 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
    HWND hWnd = CreateWindow(
        _szWindowClass, 
        _szWindowTitle, 
-       WS_OVERLAPPEDWINDOW, 
+       WS_OVERLAPPEDWINDOW | WS_EX_CLIENTEDGE, 
        CW_USEDEFAULT, 
        CW_USEDEFAULT, 
        Q_WINDOW_WIDTH_DEFAULT, 
@@ -206,7 +206,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         else
         {
             // TODO Game not in progress, draw the empty state
-            TextOut(hdc, 100, 100, L"Game not in progress", 20);
+            RECT rcClient;
+            GetClientRect(hWnd, &rcClient);
+            TextOut(hdc, 
+                rcClient.left + ((rcClient.right - rcClient.left) / 2), 
+                rcClient.top + ((rcClient.bottom - rcClient.top) / 2), 
+                L"Game not in progress", 
+                20);
         }
 
         EndPaint(hWnd, &ps);
