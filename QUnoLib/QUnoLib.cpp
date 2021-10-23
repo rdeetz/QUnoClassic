@@ -110,7 +110,16 @@ BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard)
         return FALSE;
     }
 
-    hPlayer->cards[hPlayer->nCardCount] = hCard;
+    for (int i = 0; i < PLAYER_CARDS_MAX; i++)
+    {
+        // Find the first empty space for the new card;
+        if (hPlayer->cards[i] == NULL)
+        {
+            hPlayer->cards[i] = hCard;
+            break;
+        }        
+    }
+    
     hPlayer->nCardCount++;
 
     return TRUE;
