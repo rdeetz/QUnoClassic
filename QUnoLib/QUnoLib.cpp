@@ -82,6 +82,7 @@ BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
 
 BOOL RemovePlayerFromGame(HGAME hGame, INT nPlayerIndex)
 {
+    // Would it be better for this function to return player being removed?
     if ((hGame == NULL) ||
         (nPlayerIndex > (GAME_PLAYERS_MAX - 1)) ||
         (nPlayerIndex < 0))
@@ -97,6 +98,37 @@ BOOL RemovePlayerFromGame(HGAME hGame, INT nPlayerIndex)
     HeapFree(_hProcessHeap, 0, (LPVOID)hGame->players[nPlayerIndex]);
     hGame->players[nPlayerIndex] = NULL;
     hGame->nPlayerCount--;
+
+    return TRUE;
+}
+
+BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard)
+{
+    if ((hPlayer == NULL) ||
+        (hCard == NULL))
+    {
+        return FALSE;
+    }
+
+    hPlayer->cards[hPlayer->nCardCount] = hCard;
+    hPlayer->nCardCount++;
+
+    return TRUE;
+}
+
+BOOL RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex, HCARD* phCard)
+{
+    if ((hPlayer == NULL) ||
+        (nCardIndex > PLAYER_CARDS_MAX) ||
+        (nCardIndex < 0))
+    {
+        phCard = NULL;
+        return FALSE;
+    }
+
+    *phCard = hPlayer->cards[nCardIndex];
+    hPlayer->cards[nCardIndex] = NULL;
+    hPlayer->nCardCount--;
 
     return TRUE;
 }

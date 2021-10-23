@@ -41,11 +41,13 @@ typedef struct _tagCARD
     UINT8 color;
 } CARD;
 
+typedef CARD* HCARD;
+
 typedef struct _tagPLAYER
 {
     TCHAR szPlayerName[PLAYER_NAME_MAX];
     BOOL bIsHuman;
-    CARD cards[PLAYER_CARDS_MAX];
+    HCARD cards[PLAYER_CARDS_MAX];
     INT nCardCount;
 } PLAYER;
 
@@ -65,6 +67,8 @@ extern "C" QUNOLIB_API BOOL DestroyGame(HGAME hGame);
 extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman);
 extern "C" QUNOLIB_API BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex);
 extern "C" QUNOLIB_API BOOL RemovePlayerFromGame(HGAME hGame, INT nPlayerIndex);
+extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard);
+extern "C" QUNOLIB_API BOOL RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex, HCARD* phCard);
 extern "C" QUNOLIB_API BOOL DealGame(HGAME hGame);
 
 /*
