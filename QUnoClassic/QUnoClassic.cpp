@@ -439,6 +439,11 @@ BOOL GetFileVersionString(LPTSTR lpModule, LPTSTR lpKey, LPTSTR lpValue, UINT uM
 
 VOID StartGame()
 {
+    if (_hCurrentGame == NULL)
+    {
+        StopGame();
+    }
+
     _hCurrentGame = CreateGame();
 
     HPLAYER hHumanPlayer = CreatePlayer(_szDefaultPlayerName, TRUE);
@@ -450,7 +455,7 @@ VOID StartGame()
     for (UINT i = 1; i <= _nDefaultComputerPlayers; i++)
     {
         TCHAR szComputerPlayerName[MAX_LOADSTRING];
-        wsprintf(szComputerPlayerName, szPlayerNameTemplate, i + 1);
+        wsprintf(szComputerPlayerName, szPlayerNameTemplate, i + 1); // This isn't great.
 
         HPLAYER hComputerPlayer = CreatePlayer(szComputerPlayerName, FALSE);
         AddPlayerToGame(_hCurrentGame, hComputerPlayer, i);

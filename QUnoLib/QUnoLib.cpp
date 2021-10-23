@@ -30,6 +30,11 @@ HGAME CreateGame()
 
 BOOL DestroyGame(HGAME hGame)
 {
+    if (hGame == NULL)
+    {
+        return FALSE;
+    }
+    
     AcquireProcessHeap();
 
     for (int i = 0; i < GAME_PLAYERS_MAX; i++)
@@ -45,6 +50,12 @@ BOOL DestroyGame(HGAME hGame)
 
 HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
 {
+    if (lpPlayerName == NULL)
+    {
+        // Should I call SetLastError here to report the problem?
+        return NULL;
+    }
+
     AcquireProcessHeap();
 
     HPLAYER player = (HPLAYER)HeapAlloc(_hProcessHeap, HEAP_ZERO_MEMORY, sizeof(PLAYER));
@@ -54,18 +65,28 @@ HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
     return player;
 }
 
-VOID AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
+BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
 {
+    if ((hGame == NULL) ||
+        (hPlayer == NULL) ||
+        (nPlayerIndex > (GAME_PLAYERS_MAX - 1)))
+    {
+        return FALSE;
+    }
+
     hGame->players[nPlayerIndex] = hPlayer;
 
-    return;
+    return TRUE;
 }
 
-VOID DealGame(HGAME hGame)
+BOOL DealGame(HGAME hGame)
 {
-    // TODO Shuffle up and deal.
+    if (hGame == NULL)
+    {
+        return FALSE;
+    }
 
-    return;
+    return TRUE;
 }
 
 VOID AcquireProcessHeap()
