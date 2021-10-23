@@ -75,6 +75,28 @@ BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
     }
 
     hGame->players[nPlayerIndex] = hPlayer;
+    hGame->nPlayerCount++;
+
+    return TRUE;
+}
+
+BOOL RemovePlayerFromGame(HGAME hGame, INT nPlayerIndex)
+{
+    if ((hGame == NULL) ||
+        (nPlayerIndex > (GAME_PLAYERS_MAX - 1)) ||
+        (nPlayerIndex < 0))
+    {
+        return FALSE;
+    }
+
+    if (&hGame->players[nPlayerIndex] != NULL)
+    {
+        return FALSE;
+    }
+
+    HeapFree(_hProcessHeap, 0, (LPVOID)hGame->players[nPlayerIndex]);
+    hGame->players[nPlayerIndex] = NULL;
+    hGame->nPlayerCount--;
 
     return TRUE;
 }
