@@ -153,6 +153,20 @@ BOOL DealGame(HGAME hGame)
         return FALSE;
     }
 
+    // TODO Shuffle the cards.
+
+    for (int round = 0; round < PLAYER_CARDS_START; round++)
+    {
+        for (int player = 0; player < hGame->nPlayerCount; player++)
+        {
+            int index = (round * (PLAYER_CARDS_START - 1)) + player;
+            HPLAYER hPlayer = hGame->players[player];
+            HCARD hCard = &(hGame->deck[index]);
+
+            AddCardToPlayer(hPlayer, hCard);
+        }
+    }
+
     return TRUE;
 }
 

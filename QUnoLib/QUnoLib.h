@@ -11,6 +11,7 @@
 
 #define PLAYER_NAME_MAX     128
 #define PLAYER_CARDS_MAX    16
+#define PLAYER_CARDS_START  5
 #define GAME_PLAYERS_MAX    9
 #define GAME_DECK_MAX       ((12 * 4) + 4) // 1 each for each color, 2 wild, 2 wild-draw-four
 
