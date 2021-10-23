@@ -12,6 +12,7 @@
 #define PLAYER_NAME_MAX     128
 #define PLAYER_CARDS_MAX    16
 #define GAME_PLAYERS_MAX    9
+#define GAME_DECK_MAX       ((12 * 4) + 4) // 1 each for each color, 2 wild, 2 wild-draw-four
 
 #define CARD_COLOR_WILD     0
 #define CARD_COLOR_RED      1
@@ -37,8 +38,8 @@
 
 typedef struct _tagCARD
 {
-    UINT8 value;
     UINT8 color;
+    UINT8 value;
 } CARD;
 
 typedef CARD* HCARD;
@@ -55,7 +56,7 @@ typedef PLAYER* HPLAYER;
 
 typedef struct _tagGAME
 {
-    // TODO Deck
+    CARD deck[GAME_DECK_MAX];
     HPLAYER players[GAME_PLAYERS_MAX];
     INT nPlayerCount;
 } GAME;
@@ -70,21 +71,3 @@ extern "C" QUNOLIB_API BOOL RemovePlayerFromGame(HGAME hGame, INT nPlayerIndex);
 extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard);
 extern "C" QUNOLIB_API BOOL RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex, HCARD* phCard);
 extern "C" QUNOLIB_API BOOL DealGame(HGAME hGame);
-
-/*
-extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, CARD card);
-extern "C" QUNOLIB_API CARD RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex);
-extern "C" QUNOLIB_API INT AddPlayerToGame(INT);
-extern "C" QUNOLIB_API INT StartGame(INT); // shuffle and deal
-extern "C" QUNOLIB_API INT CanPlayCard(INT);
-extern "C" QUNOLIB_API INT PlayCard(INT);
-extern "C" QUNOLIB_API INT PlayWildCard(INT);
-extern "C" QUNOLIB_API INT DrawCard(INT);
-extern "C" QUNOLIB_API INT GetGameStatus(INT); // current player, wild color, etc
-extern "C" QUNOLIB_API INT IsGameOver(INT);
-extern "C" QUNOLIB_API INT GetGameInfo(INT); // list of players, etc
-extern "C" QUNOLIB_API INT ChooseCardToPlay(INT);
-extern "C" QUNOLIB_API INT ChooseWildColor(INT);
-extern "C" QUNOLIB_API INT AddCardToHand(INT);
-extern "C" QUNOLIB_API INT RemoveCardFromHand(INT);
-*/

@@ -7,6 +7,7 @@
 HANDLE _hProcessHeap;
 
 VOID AcquireProcessHeap();
+VOID ProvideStandardDeck(HGAME hGame);
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
@@ -25,7 +26,10 @@ HGAME CreateGame()
 {
     AcquireProcessHeap();
 
-    return (HGAME)HeapAlloc(_hProcessHeap, HEAP_ZERO_MEMORY, sizeof(GAME));
+    HGAME hGame = (HGAME)HeapAlloc(_hProcessHeap, HEAP_ZERO_MEMORY, sizeof(GAME));
+    ProvideStandardDeck(hGame);
+
+    return hGame;
 }
 
 BOOL DestroyGame(HGAME hGame)
@@ -157,6 +161,35 @@ VOID AcquireProcessHeap()
     if (_hProcessHeap == NULL)
     {
         _hProcessHeap = GetProcessHeap();
+    }
+
+    return;
+}
+
+VOID ProvideStandardDeck(HGAME hGame)
+{
+    CARD c0; c0.color = CARD_COLOR_WILD; c0.value = CARD_VALUE_WILDD4;
+    hGame->deck[0] = c0;
+    CARD c1; c1.color = CARD_COLOR_WILD; c1.value = CARD_VALUE_WILDD4;
+    hGame->deck[1] = c1;
+    CARD c2; c2.color = CARD_COLOR_WILD; c2.value = CARD_VALUE_WILDD4;
+    hGame->deck[2] = c2;
+    CARD c3; c3.color = CARD_COLOR_WILD; c3.value = CARD_VALUE_WILDD4;
+    hGame->deck[3] = c3;
+
+    int index = 4;
+
+    for (int c = CARD_COLOR_RED; c <= CARD_COLOR_GREEN; c++)
+    {
+        for (int v = CARD_VALUE_ZERO; v <= CARD_VALUE_DRAWTWO; v++)
+        {
+            CARD card;
+            card.color = c;
+            card.value = v;
+
+            hGame->deck[index] = card;
+            index++;
+        }
     }
 
     return;
