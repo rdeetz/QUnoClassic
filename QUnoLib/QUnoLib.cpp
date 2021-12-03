@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "QUnoLib.h"
+#include <random>
 
 HANDLE _hProcessHeap;
 
@@ -153,7 +154,24 @@ BOOL DealGame(HGAME hGame)
         return FALSE;
     }
 
-    // TODO Shuffle the cards.
+    // Add all the cards from the deck to the draw pile.
+    for (int i = 0; i < GAME_DECK_MAX; i++)
+    {
+        hGame->drawPile[i] = &(hGame->deck[i]);
+    }
+
+    // Shuffle the draw pile.
+    srand(7); // Should seed this with milliseconds after midnight or something.
+
+    for (int i = GAME_DECK_MAX - 1; i > 0; i--)
+    {
+        int r = rand();
+        double ratio = (double)r / INT16_MAX;
+        int s = (int) floor(i * ratio);
+        HCARD temp = hGame->drawPile[i];
+        hGame->drawPile[i] = hGame->drawPile[s];
+        hGame->drawPile[s] = temp;
+    }
 
     for (int round = 0; round < PLAYER_CARDS_START; round++)
     {

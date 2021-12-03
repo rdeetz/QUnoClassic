@@ -37,7 +37,7 @@
 #define CARD_VALUE_WILD     13
 #define CARD_VALUE_WILDD4   14
 
-typedef struct _tagCARD
+typedef struct _CARD
 {
     UINT8 color;
     UINT8 value;
@@ -45,7 +45,7 @@ typedef struct _tagCARD
 
 typedef CARD* HCARD;
 
-typedef struct _tagPLAYER
+typedef struct _PLAYER
 {
     TCHAR szPlayerName[PLAYER_NAME_MAX];
     BOOL bIsHuman;
@@ -55,11 +55,15 @@ typedef struct _tagPLAYER
 
 typedef PLAYER* HPLAYER;
 
-typedef struct _tagGAME
+typedef struct _GAME
 {
     CARD deck[GAME_DECK_MAX];
     HPLAYER players[GAME_PLAYERS_MAX];
     INT nPlayerCount;
+    HCARD drawPile[GAME_DECK_MAX];
+    INT nDrawPileIndex;
+    HCARD discardPile[GAME_DECK_MAX];
+    INT nDiscardPileIndex;
 } GAME;
 
 typedef GAME* HGAME;
