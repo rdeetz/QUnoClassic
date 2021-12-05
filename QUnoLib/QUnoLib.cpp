@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "QUnoLib.h"
+#include <time.h>
 #include <random>
 
 HANDLE _hProcessHeap;
@@ -161,7 +162,8 @@ BOOL DealGame(HGAME hGame)
     }
 
     // Shuffle the draw pile.
-    srand(7); // Should seed this with milliseconds after midnight or something.
+    time_t seconds = time(NULL);
+    srand((unsigned int)seconds);
 
     for (int i = GAME_DECK_MAX - 1; i > 0; i--)
     {
