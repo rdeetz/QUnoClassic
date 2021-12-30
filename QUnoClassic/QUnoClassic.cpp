@@ -28,6 +28,7 @@ TCHAR _szWindowClass[MAX_LOADSTRING];
 HFONT _hBoldFont;
 TCHAR _szDefaultPlayerName[MAX_LOADSTRING];
 UINT _nDefaultComputerPlayers = 3;
+TCHAR _szNewGamePrompt[MAX_LOADSTRING];
 HGAME _hCurrentGame;
 
 ATOM RegisterWndClass(HINSTANCE);
@@ -51,6 +52,9 @@ INT APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
     LoadString(hInstance, IDS_QUNO, _szWindowTitle, MAX_LOADSTRING);
     LoadString(hInstance, IDC_QUNOCLASSIC, _szWindowClass, MAX_LOADSTRING);
     RegisterWndClass(hInstance);
+
+    // This needs to come before InitInstance since the string is used in the initial painting.
+    LoadString(hInstance, IDS_NEWGAMEPROMPT, _szNewGamePrompt, MAX_LOADSTRING);
 
     if (!InitInstance(hInstance, nCmdShow))
     {
@@ -205,14 +209,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         else
         {
-            // TODO Game not in progress, draw the empty state
             RECT rcClient;
             GetClientRect(hWnd, &rcClient);
             TextOut(hdc, 
                 rcClient.left + ((rcClient.right - rcClient.left) / 2), 
                 rcClient.top + ((rcClient.bottom - rcClient.top) / 2), 
-                L"Game not in progress", 
-                20);
+                _szNewGamePrompt, 
+                lstrlen(_szNewGamePrompt));
         }
 
         EndPaint(hWnd, &ps);

@@ -8,6 +8,7 @@
 #define IDS_DEFAULTPLAYERNAME           104
 #define IDS_TEMPLATEPLAYERNAME          105
 #define IDS_ERROR_OPTIONS               106
+#define IDS_NEWGAMEPROMPT               107
 #define IDD_ABOUTDLG                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
