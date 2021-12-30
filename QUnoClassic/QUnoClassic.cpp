@@ -211,9 +211,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             RECT rcClient;
             GetClientRect(hWnd, &rcClient);
+            SIZE size;
+            GetTextExtentPoint32(hdc, _szNewGamePrompt, lstrlen(_szNewGamePrompt), &size);
             TextOut(hdc, 
-                rcClient.left + ((rcClient.right - rcClient.left) / 2), 
-                rcClient.top + ((rcClient.bottom - rcClient.top) / 2), 
+                rcClient.left + (((rcClient.right - rcClient.left) / 2) - (size.cx / 2)), 
+                rcClient.top + (((rcClient.bottom - rcClient.top) / 2) - (size.cy / 2)), 
                 _szNewGamePrompt, 
                 lstrlen(_szNewGamePrompt));
         }
