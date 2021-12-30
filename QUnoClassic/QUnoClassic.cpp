@@ -447,7 +447,7 @@ VOID StartGame()
     _hCurrentGame = CreateGame();
 
     HPLAYER hHumanPlayer = CreatePlayer(_szDefaultPlayerName, TRUE);
-    AddPlayerToGame(_hCurrentGame, hHumanPlayer, 0);
+    AddPlayerToGame(_hCurrentGame, hHumanPlayer);
 
     TCHAR szPlayerNameTemplate[MAX_LOADSTRING];
     LoadString(_hInstance, IDS_TEMPLATEPLAYERNAME, szPlayerNameTemplate, MAX_LOADSTRING);
@@ -458,7 +458,7 @@ VOID StartGame()
         wsprintf(szComputerPlayerName, szPlayerNameTemplate, i + 1); // This isn't great.
 
         HPLAYER hComputerPlayer = CreatePlayer(szComputerPlayerName, FALSE);
-        AddPlayerToGame(_hCurrentGame, hComputerPlayer, i);
+        AddPlayerToGame(_hCurrentGame, hComputerPlayer);
     }
 
     DealGame(_hCurrentGame);

@@ -50,7 +50,7 @@ typedef struct _PLAYER
     TCHAR szPlayerName[PLAYER_NAME_MAX];
     BOOL bIsHuman;
     HCARD cards[PLAYER_CARDS_MAX];
-    INT nCardCount;
+    UINT nCardCount;
 } PLAYER;
 
 typedef PLAYER* HPLAYER;
@@ -59,11 +59,11 @@ typedef struct _GAME
 {
     CARD deck[GAME_DECK_MAX];
     HPLAYER players[GAME_PLAYERS_MAX];
-    INT nPlayerCount;
+    UINT nPlayerCount;
     HCARD drawPile[GAME_DECK_MAX];
-    INT nDrawPileIndex;
+    UINT nDrawPileIndex;
     HCARD discardPile[GAME_DECK_MAX];
-    INT nDiscardPileIndex;
+    UINT nDiscardPileIndex;
 } GAME;
 
 typedef GAME* HGAME;
@@ -71,8 +71,8 @@ typedef GAME* HGAME;
 extern "C" QUNOLIB_API HGAME CreateGame();
 extern "C" QUNOLIB_API BOOL DestroyGame(HGAME hGame);
 extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman);
-extern "C" QUNOLIB_API BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex);
-extern "C" QUNOLIB_API BOOL RemovePlayerFromGame(HGAME hGame, INT nPlayerIndex);
+extern "C" QUNOLIB_API BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer);
+extern "C" QUNOLIB_API BOOL RemovePlayerFromGame(HGAME hGame, UINT nPlayerIndex);
 extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard);
-extern "C" QUNOLIB_API BOOL RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex, HCARD* phCard);
+extern "C" QUNOLIB_API BOOL RemoveCardFromPlayer(HPLAYER hPlayer, UINT nCardIndex, HCARD* phCard);
 extern "C" QUNOLIB_API BOOL DealGame(HGAME hGame);

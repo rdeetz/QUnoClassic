@@ -45,7 +45,7 @@ BOOL DestroyGame(HGAME hGame)
 
     for (int i = 0; i < GAME_PLAYERS_MAX; i++)
     {
-        if (&hGame->players[i] != NULL)
+        if (hGame->players[i] != NULL)
         {
             HeapFree(_hProcessHeap, 0, (LPVOID)hGame->players[i]);
         }
@@ -71,15 +71,17 @@ HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
     return player;
 }
 
-BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
+BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
 {
-    if ((hGame == NULL) ||
-        (hPlayer == NULL) ||
-        (nPlayerIndex > (GAME_PLAYERS_MAX - 1)))
+    if ((hGame == NULL) || (hPlayer == NULL))
     {
         return FALSE;
     }
 
+    hGame->players[hGame->nPlayerCount] = hPlayer;
+    hGame->nPlayerCount++;
+
+    /*
     for (int i = 0; i < GAME_PLAYERS_MAX; i++)
     {
         // Find the first empty location for the new player
@@ -90,20 +92,19 @@ BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
             break;
         }
     }
+    */
 
     return TRUE;
 }
 
-BOOL RemovePlayerFromGame(HGAME hGame, INT nPlayerIndex)
+BOOL RemovePlayerFromGame(HGAME hGame, UINT nPlayerIndex)
 {
-    if ((hGame == NULL) ||
-        (nPlayerIndex > (GAME_PLAYERS_MAX - 1)) ||
-        (nPlayerIndex < 0))
+    if ((hGame == NULL) || (nPlayerIndex > (GAME_PLAYERS_MAX - 1)))
     {
         return FALSE;
     }
 
-    if (&hGame->players[nPlayerIndex] != NULL)
+    if (hGame->players[nPlayerIndex] == NULL)
     {
         return FALSE;
     }
@@ -117,8 +118,7 @@ BOOL RemovePlayerFromGame(HGAME hGame, INT nPlayerIndex)
 
 BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard)
 {
-    if ((hPlayer == NULL) ||
-        (hCard == NULL))
+    if ((hPlayer == NULL) || (hCard == NULL))
     {
         return FALSE;
     }
@@ -137,11 +137,15 @@ BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard)
     return TRUE;
 }
 
-BOOL RemoveCardFromPlayer(HPLAYER hPlayer, INT nCardIndex, HCARD* phCard)
+BOOL RemoveCardFromPlayer(HPLAYER hPlayer, UINT nCardIndex, HCARD* phCard)
 {
-    if ((hPlayer == NULL) ||
-        (nCardIndex > PLAYER_CARDS_MAX) ||
-        (nCardIndex < 0))
+    if ((hPlayer == NULL) || (nCardIndex > PLAYER_CARDS_MAX))
+    {
+        phCard = NULL;
+        return FALSE;
+    }
+
+    if (hPlayer->cards[nCardIndex] == NULL)
     {
         phCard = NULL;
         return FALSE;
@@ -183,9 +187,9 @@ BOOL DealGame(HGAME hGame)
 
     for (int round = 0; round < PLAYER_CARDS_START; round++)
     {
-        for (int player = 0; player < hGame->nPlayerCount; player++)
+        for (UINT player = 0; player < hGame->nPlayerCount; player++)
         {
-            int index = (round * (PLAYER_CARDS_START - 1)) + player;
+            UINT index = (round * (PLAYER_CARDS_START - 1)) + player;
             HPLAYER hPlayer = hGame->players[player];
             HCARD hCard = &(hGame->deck[index]);
 
