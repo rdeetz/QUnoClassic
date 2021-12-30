@@ -80,15 +80,22 @@ BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer, INT nPlayerIndex)
         return FALSE;
     }
 
-    hGame->players[nPlayerIndex] = hPlayer;
-    hGame->nPlayerCount++;
+    for (int i = 0; i < GAME_PLAYERS_MAX; i++)
+    {
+        // Find the first empty location for the new player
+        if (hGame->players[i] == NULL)
+        {
+            hGame->players[i] = hPlayer;
+            hGame->nPlayerCount++;
+            break;
+        }
+    }
 
     return TRUE;
 }
 
 BOOL RemovePlayerFromGame(HGAME hGame, INT nPlayerIndex)
 {
-    // Would it be better for this function to return player being removed?
     if ((hGame == NULL) ||
         (nPlayerIndex > (GAME_PLAYERS_MAX - 1)) ||
         (nPlayerIndex < 0))
@@ -118,15 +125,14 @@ BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard)
 
     for (int i = 0; i < PLAYER_CARDS_MAX; i++)
     {
-        // Find the first empty space for the new card;
+        // Find the first empty location for the new card.
         if (hPlayer->cards[i] == NULL)
         {
             hPlayer->cards[i] = hCard;
+            hPlayer->nCardCount++;
             break;
         }        
-    }
-    
-    hPlayer->nCardCount++;
+    }    
 
     return TRUE;
 }
