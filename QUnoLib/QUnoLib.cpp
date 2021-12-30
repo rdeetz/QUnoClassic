@@ -78,11 +78,13 @@ BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
         return FALSE;
     }
 
+    // TODO This works for now, but it's not good since
+    //      if a player gets removed it will create a hole.
     hGame->players[hGame->nPlayerCount] = hPlayer;
     hGame->nPlayerCount++;
 
     /*
-    for (int i = 0; i < GAME_PLAYERS_MAX; i++)
+    for (UINT i = 0; i < GAME_PLAYERS_MAX; i++)
     {
         // Find the first empty location for the new player
         if (hGame->players[i] == NULL)
@@ -123,7 +125,7 @@ BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard)
         return FALSE;
     }
 
-    for (int i = 0; i < PLAYER_CARDS_MAX; i++)
+    for (UINT i = 0; i < PLAYER_CARDS_MAX; i++)
     {
         // Find the first empty location for the new card.
         if (hPlayer->cards[i] == NULL)
