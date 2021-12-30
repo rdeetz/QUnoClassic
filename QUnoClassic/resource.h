@@ -9,6 +9,8 @@
 #define IDS_TEMPLATEPLAYERNAME          105
 #define IDS_ERROR_OPTIONS               106
 #define IDS_NEWGAMEPROMPT               107
+#define IDS_PLAYER_HUMAN                118
+#define IDS_PLAYER_ROBOT                119
 #define IDD_ABOUTDLG                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105

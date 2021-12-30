@@ -29,6 +29,8 @@ HFONT _hBoldFont;
 TCHAR _szDefaultPlayerName[MAX_LOADSTRING];
 UINT _nDefaultComputerPlayers = 3;
 TCHAR _szNewGamePrompt[MAX_LOADSTRING];
+TCHAR _szPlayerKindHuman[MAX_LOADSTRING];
+TCHAR _szPlayerKindRobot[MAX_LOADSTRING];
 HGAME _hCurrentGame;
 
 ATOM RegisterWndClass(HINSTANCE);
@@ -55,6 +57,8 @@ INT APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
 
     // This needs to come before InitInstance since the string is used in the initial painting.
     LoadString(hInstance, IDS_NEWGAMEPROMPT, _szNewGamePrompt, MAX_LOADSTRING);
+    LoadString(hInstance, IDS_PLAYER_HUMAN, _szPlayerKindHuman, MAX_LOADSTRING);
+    LoadString(hInstance, IDS_PLAYER_ROBOT, _szPlayerKindRobot, MAX_LOADSTRING);
 
     if (!InitInstance(hInstance, nCmdShow))
     {
@@ -205,7 +209,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (_hCurrentGame != NULL)
         {
             // TODO Game in progress, draw it.
-            TextOut(hdc, 100, 100, L"Game in progress!", 17);
+            //      Show each player and their cards.
+            //      Show the draw and discard piles for the game.
+            //      Will need to capture the current player, direction, and wild color for the game.
+            RECT rcClient;
+            GetClientRect(hWnd, &rcClient);
+            LONG left = rcClient.left + 64;
+
+            for (UINT player = 0; player < GAME_PLAYERS_MAX; player++)
+            {
+                HPLAYER hPlayer = _hCurrentGame->players[player];
+                
+                if (hPlayer != NULL)
+                {
+                    SIZE size;
+                    GetTextExtentPoint32(hdc, hPlayer->szPlayerName, lstrlen(hPlayer->szPlayerName), &size);
+                    LONG top = rcClient.top + size.cy;
+                    TextOut(hdc, left, top, hPlayer->szPlayerName, lstrlen(hPlayer->szPlayerName));
+                    LPTSTR lpPlayerKind = hPlayer->bIsHuman ? _szPlayerKindHuman : _szPlayerKindRobot;
+                    TextOut(hdc, left, top + size.cy, lpPlayerKind, lstrlen(lpPlayerKind));
+
+                    for (UINT card = 0; card < PLAYER_CARDS_MAX; card++)
+                    {
+                        HCARD hCard = hPlayer->cards[card];
+
+                        if (hCard != NULL)
+                        {
+                            // TODO Render card
+                        }
+                    }
+
+                    left += (size.cx + 64); // 64 is a guess for a nice padding.
+                }
+            }
         }
         else
         {
