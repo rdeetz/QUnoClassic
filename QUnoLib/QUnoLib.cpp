@@ -193,7 +193,7 @@ BOOL DealGame(HGAME hGame)
         {
             UINT index = (round * (PLAYER_CARDS_START - 1)) + player;
             HPLAYER hPlayer = hGame->players[player];
-            HCARD hCard = &(hGame->deck[index]);
+            HCARD hCard = hGame->drawPile[index];
 
             AddCardToPlayer(hPlayer, hCard);
         }
