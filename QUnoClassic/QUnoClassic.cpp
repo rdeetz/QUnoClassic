@@ -214,7 +214,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             //      Will need to capture the current player, direction, and wild color for the game.
             RECT rcClient;
             GetClientRect(hWnd, &rcClient);
-            LONG left = rcClient.left + 64;
+            LONG left = rcClient.left + 128;
 
             for (UINT player = 0; player < GAME_PLAYERS_MAX; player++)
             {
@@ -227,7 +227,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     LONG top = rcClient.top + size.cy;
                     TextOut(hdc, left, top, hPlayer->szPlayerName, lstrlen(hPlayer->szPlayerName));
                     LPTSTR lpPlayerKind = hPlayer->bIsHuman ? _szPlayerKindHuman : _szPlayerKindRobot;
-                    TextOut(hdc, left, top + size.cy, lpPlayerKind, lstrlen(lpPlayerKind));
+                    top += size.cy;
+                    TextOut(hdc, left, top, lpPlayerKind, lstrlen(lpPlayerKind));
 
                     for (UINT card = 0; card < PLAYER_CARDS_MAX; card++)
                     {
@@ -235,11 +236,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                         if (hCard != NULL)
                         {
-                            // TODO Render card
+                            top += size.cy;
+                            TCHAR szCard[MAX_LOADSTRING];
+                            wsprintf(szCard, L"Color: %d, Value: %d", hCard->color, hCard->value);
+                            TextOut(hdc, left, top, szCard, lstrlen(szCard));
                         }
                     }
 
-                    left += (size.cx + 64); // 64 is a guess for a nice padding.
+                    left += (size.cx + 128); // 64 is a guess for a nice padding.
                 }
             }
         }
