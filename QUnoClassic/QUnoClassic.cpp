@@ -22,6 +22,12 @@ struct LANGUAGEANDCODEPAGE
     WORD wCodePage;
 };
 
+const COLORREF Q_COLOR_RED      = 0x000000FF;
+const COLORREF Q_COLOR_BLUE     = 0x00FF0000;
+const COLORREF Q_COLOR_YELLOW   = 0x0000FFFF;
+const COLORREF Q_COLOR_GREEN    = 0x0000FF00;
+const COLORREF Q_COLOR_BLACK    = 0x00000000;
+
 HINSTANCE _hInstance;
 TCHAR _szWindowTitle[MAX_LOADSTRING];
 TCHAR _szWindowClass[MAX_LOADSTRING];
@@ -31,6 +37,11 @@ UINT _nDefaultComputerPlayers = 3;
 TCHAR _szNewGamePrompt[MAX_LOADSTRING];
 TCHAR _szPlayerKindHuman[MAX_LOADSTRING];
 TCHAR _szPlayerKindRobot[MAX_LOADSTRING];
+HBRUSH _hbrushRed;
+HBRUSH _hbrushBlue;
+HBRUSH _hbrushYellow;
+HBRUSH _hbrushGreen;
+HBRUSH _hbrushBlack;
 HGAME _hCurrentGame;
 
 ATOM RegisterWndClass(HINSTANCE);
@@ -64,6 +75,12 @@ INT APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
     {
         return FALSE;
     }
+
+    _hbrushRed = CreateSolidBrush(Q_COLOR_RED);
+    _hbrushBlue = CreateSolidBrush(Q_COLOR_BLUE);
+    _hbrushYellow = CreateSolidBrush(Q_COLOR_YELLOW);
+    _hbrushGreen = CreateSolidBrush(Q_COLOR_GREEN);
+    _hbrushBlack = CreateSolidBrush(Q_COLOR_BLACK);
 
     HKEY hKey;
     RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hKey);
@@ -240,6 +257,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             TCHAR szCard[MAX_LOADSTRING];
                             wsprintf(szCard, L"Color: %d, Value: %d", hCard->color, hCard->value);
                             TextOut(hdc, left, top, szCard, lstrlen(szCard));
+                            RECT rcCard;
+                            rcCard.left = left;
+                            rcCard.top = top;
+                            rcCard.right = left + size.cx;
+                            rcCard.bottom = top + size.cy;
+
+                            switch (hCard->color)
+                            {
+                            case CARD_COLOR_RED:
+                                FillRect(hdc, &rcCard, _hbrushRed);
+                                break;
+                            case CARD_COLOR_BLUE:
+                                FillRect(hdc, &rcCard, _hbrushBlue);
+                                break;
+                            case CARD_COLOR_YELLOW:
+                                FillRect(hdc, &rcCard, _hbrushYellow);
+                                break;
+                            case CARD_COLOR_GREEN:
+                                FillRect(hdc, &rcCard, _hbrushGreen);
+                                break;
+                            case CARD_COLOR_WILD:
+                                FillRect(hdc, &rcCard, _hbrushBlack);
+                                break;
+                            default:
+                                break;
+                            }
                         }
                     }
 
@@ -265,6 +308,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_DESTROY:
+        DeleteObject(_hbrushRed);
+        DeleteObject(_hbrushBlue);
+        DeleteObject(_hbrushGreen);
+        DeleteObject(_hbrushYellow);
+        DeleteObject(_hbrushBlack);
         PostQuitMessage(0);
         break;
 
