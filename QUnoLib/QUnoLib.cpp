@@ -214,16 +214,16 @@ VOID AcquireProcessHeap()
 
 VOID ProvideStandardDeck(HGAME hGame)
 {
-    CARD c0; c0.color = CARD_COLOR_WILD; c0.value = CARD_VALUE_WILDD4;
+    CARD c0; c0.color = CARD_COLOR_WILD; c0.value = CARD_VALUE_WILD;
     hGame->deck[0] = c0;
-    CARD c1; c1.color = CARD_COLOR_WILD; c1.value = CARD_VALUE_WILDD4;
+    CARD c1; c1.color = CARD_COLOR_WILD; c1.value = CARD_VALUE_WILD;
     hGame->deck[1] = c1;
     CARD c2; c2.color = CARD_COLOR_WILD; c2.value = CARD_VALUE_WILDD4;
     hGame->deck[2] = c2;
     CARD c3; c3.color = CARD_COLOR_WILD; c3.value = CARD_VALUE_WILDD4;
     hGame->deck[3] = c3;
 
-    int index = 4;
+    int index = 4; // This is starting at 4 since we just added 4 cards.
 
     for (int c = CARD_COLOR_RED; c <= CARD_COLOR_GREEN; c++)
     {

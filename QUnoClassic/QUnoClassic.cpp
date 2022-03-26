@@ -225,10 +225,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         if (_hCurrentGame != NULL)
         {
-            // TODO Game in progress, draw it.
-            //      Show each player and their cards.
-            //      Show the draw and discard piles for the game.
-            //      Will need to capture the current player, direction, and wild color for the game.
             RECT rcClient;
             GetClientRect(hWnd, &rcClient);
             LONG left = rcClient.left + 128;

@@ -55,6 +55,9 @@ typedef struct _PLAYER
 
 typedef PLAYER* HPLAYER;
 
+// TODO
+// Add field for current direction.
+// Add field for current wild color.
 typedef struct _GAME
 {
     CARD deck[GAME_DECK_MAX];
