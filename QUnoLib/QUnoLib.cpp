@@ -31,6 +31,9 @@ HGAME CreateGame()
     HGAME hGame = (HGAME)HeapAlloc(_hProcessHeap, HEAP_ZERO_MEMORY, sizeof(GAME));
     ProvideStandardDeck(hGame);
 
+    // For some reason player[0] appears to be corrupted after the call to ProvideStandardDeck.
+    hGame->players[0] = NULL;
+
     return hGame;
 }
 
@@ -78,12 +81,6 @@ BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
         return FALSE;
     }
 
-    // TODO This works for now, but it's not good since
-    //      if a player gets removed it will create a hole.
-    hGame->players[hGame->nPlayerCount] = hPlayer;
-    hGame->nPlayerCount++;
-
-    /*
     for (UINT i = 0; i < GAME_PLAYERS_MAX; i++)
     {
         // Find the first empty location for the new player
@@ -94,7 +91,6 @@ BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
             break;
         }
     }
-    */
 
     return TRUE;
 }
