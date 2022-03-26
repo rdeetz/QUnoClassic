@@ -37,6 +37,9 @@
 #define CARD_VALUE_WILD     13
 #define CARD_VALUE_WILDD4   14
 
+#define DIRECTION_CLOCKWISE         0
+#define DIRECTION_COUNTERCLOCKWISE  1
+
 typedef struct _CARD
 {
     UINT8 color;
@@ -55,9 +58,6 @@ typedef struct _PLAYER
 
 typedef PLAYER* HPLAYER;
 
-// TODO
-// Add field for current direction.
-// Add field for current wild color.
 typedef struct _GAME
 {
     CARD deck[GAME_DECK_MAX];
@@ -67,6 +67,8 @@ typedef struct _GAME
     UINT nDrawPileIndex;
     HCARD discardPile[GAME_DECK_MAX];
     UINT nDiscardPileIndex;
+    UINT8 nCurrentDirection;
+    UINT8 nCurrentWildColor;
 } GAME;
 
 typedef GAME* HGAME;
