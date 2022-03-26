@@ -532,7 +532,7 @@ BOOL GetFileVersionString(LPTSTR lpModule, LPTSTR lpKey, LPTSTR lpValue, UINT uM
 
 VOID StartGame()
 {
-    if (_hCurrentGame == NULL)
+    if (_hCurrentGame != NULL)
     {
         StopGame();
     }
