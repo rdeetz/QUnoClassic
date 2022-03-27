@@ -204,6 +204,27 @@ BOOL DealGame(HGAME hGame)
     return TRUE;
 }
 
+BOOL CanCardPlay(HGAME hGame, HCARD hCard)
+{
+    BOOL canPlay = FALSE;
+    HCARD hCurrentCard = hGame->discardPile[hGame->nDiscardPileIndex];
+
+    if (hCard->value >= CARD_VALUE_WILD)
+    {
+        canPlay = TRUE;
+    }
+    else
+    {
+        if ((hCard->value == hCurrentCard->value) || 
+            ((hCard->color == hCurrentCard->color) || (hCard->color == hGame->nCurrentWildColor)))
+        {
+            canPlay = TRUE;
+        }
+    }
+
+    return canPlay;
+}
+
 VOID AcquireProcessHeap()
 {
     if (_hProcessHeap == NULL)

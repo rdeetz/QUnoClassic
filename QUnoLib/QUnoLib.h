@@ -82,3 +82,4 @@ extern "C" QUNOLIB_API BOOL RemovePlayerFromGame(HGAME hGame, UINT nPlayerIndex)
 extern "C" QUNOLIB_API INT AddCardToPlayer(HPLAYER hPlayer, HCARD hCard);
 extern "C" QUNOLIB_API BOOL RemoveCardFromPlayer(HPLAYER hPlayer, UINT nCardIndex, HCARD* phCard);
 extern "C" QUNOLIB_API BOOL DealGame(HGAME hGame);
+extern "C" QUNOLIB_API BOOL CanCardPlay(HGAME hGame, HCARD hCard);
