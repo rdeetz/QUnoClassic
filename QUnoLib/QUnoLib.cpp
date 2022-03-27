@@ -74,25 +74,28 @@ HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman)
     return player;
 }
 
-BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
+INT AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
 {
     if ((hGame == NULL) || (hPlayer == NULL))
     {
-        return FALSE;
+        return -1;
     }
 
-    for (UINT i = 0; i < GAME_PLAYERS_MAX; i++)
+    INT nPlayerIndex = 0;
+
+    for (int i = 0; i < GAME_PLAYERS_MAX; i++)
     {
         // Find the first empty location for the new player
         if (hGame->players[i] == NULL)
         {
             hGame->players[i] = hPlayer;
             hGame->nPlayerCount++;
+            nPlayerIndex = i;
             break;
         }
     }
 
-    return TRUE;
+    return nPlayerIndex;
 }
 
 BOOL RemovePlayerFromGame(HGAME hGame, UINT nPlayerIndex)
@@ -114,25 +117,28 @@ BOOL RemovePlayerFromGame(HGAME hGame, UINT nPlayerIndex)
     return TRUE;
 }
 
-BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard)
+INT AddCardToPlayer(HPLAYER hPlayer, HCARD hCard)
 {
     if ((hPlayer == NULL) || (hCard == NULL))
     {
-        return FALSE;
+        return -1;
     }
 
-    for (UINT i = 0; i < PLAYER_CARDS_MAX; i++)
+    INT nCardIndex = 0;
+
+    for (int i = 0; i < PLAYER_CARDS_MAX; i++)
     {
         // Find the first empty location for the new card.
         if (hPlayer->cards[i] == NULL)
         {
             hPlayer->cards[i] = hCard;
             hPlayer->nCardCount++;
+            nCardIndex = i;
             break;
         }        
     }    
 
-    return TRUE;
+    return nCardIndex;
 }
 
 BOOL RemoveCardFromPlayer(HPLAYER hPlayer, UINT nCardIndex, HCARD* phCard)

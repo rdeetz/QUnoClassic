@@ -69,6 +69,7 @@ typedef struct _GAME
     UINT nDiscardPileIndex;
     UINT8 nCurrentDirection;
     UINT8 nCurrentWildColor;
+    UINT nCurrentPlayerIndex;
 } GAME;
 
 typedef GAME* HGAME;
@@ -76,8 +77,8 @@ typedef GAME* HGAME;
 extern "C" QUNOLIB_API HGAME CreateGame();
 extern "C" QUNOLIB_API BOOL DestroyGame(HGAME hGame);
 extern "C" QUNOLIB_API HPLAYER CreatePlayer(LPTSTR lpPlayerName, BOOL bIsHuman);
-extern "C" QUNOLIB_API BOOL AddPlayerToGame(HGAME hGame, HPLAYER hPlayer);
-extern "C" QUNOLIB_API BOOL RemovePlayerFromGame(HGAME hGame, UINT nPlayerIndex);
-extern "C" QUNOLIB_API BOOL AddCardToPlayer(HPLAYER hPlayer, HCARD hCard);
+extern "C" QUNOLIB_API INT AddPlayerToGame(HGAME hGame, HPLAYER hPlayer);
+extern "C" QUNOLIB_API BOOL RemovePlayerFromGame(HGAME hGame, UINT nPlayerIndex); // Should this return the player?
+extern "C" QUNOLIB_API INT AddCardToPlayer(HPLAYER hPlayer, HCARD hCard);
 extern "C" QUNOLIB_API BOOL RemoveCardFromPlayer(HPLAYER hPlayer, UINT nCardIndex, HCARD* phCard);
 extern "C" QUNOLIB_API BOOL DealGame(HGAME hGame);
