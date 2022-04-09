@@ -31,8 +31,6 @@ HGAME CreateGame()
     HGAME hGame = (HGAME)HeapAlloc(_hProcessHeap, HEAP_ZERO_MEMORY, sizeof(GAME));
     ProvideStandardDeck(hGame);
 
-    // For some reason player[0] appears to be corrupted after the call to ProvideStandardDeck.
-    hGame->players[0] = NULL;
     hGame->nCurrentPlayerIndex = -1;
     hGame->nDrawPileIndex = -1;
     hGame->nDiscardPileIndex = -1;
@@ -88,7 +86,7 @@ INT AddPlayerToGame(HGAME hGame, HPLAYER hPlayer)
 
     for (int i = 0; i < GAME_PLAYERS_MAX; i++)
     {
-        // Find the first empty location for the new player
+        // Find the first empty location for the new player.
         if (hGame->players[i] == NULL)
         {
             hGame->players[i] = hPlayer;
@@ -203,7 +201,7 @@ BOOL DealGame(HGAME hGame)
             if (AddCardToPlayer(hPlayer, hCard) >= 0)
             {
                 hGame->drawPile[index] = NULL;
-                hGame->nDrawPileIndex = (index + 1); // TODO Make sure this doesn't overflow.                
+                hGame->nDrawPileIndex = (index + 1); // Make sure this doesn't overflow.
             }
         }
     }
@@ -212,10 +210,10 @@ BOOL DealGame(HGAME hGame)
     hGame->nCurrentPlayerIndex = 0;
 
     // Pop one card off the draw pile and add to the discard pile.
-    // If this is a wild card, need to dry again.
+    // If this is a wild card, need to try again.
     HCARD hTopCard = hGame->drawPile[hGame->nDrawPileIndex];
     hGame->drawPile[hGame->nDrawPileIndex] = NULL;
-    hGame->nDrawPileIndex = hGame->nDrawPileIndex + 1;
+    hGame->nDrawPileIndex = hGame->nDrawPileIndex + 1; // Make sure this doesn't overflow.
     hGame->discardPile[0] = hTopCard;
     hGame->nDiscardPileIndex = 0;
 

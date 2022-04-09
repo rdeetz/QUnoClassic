@@ -616,7 +616,7 @@ VOID DrawGameStatus(HDC hdc, HGAME hGame, LONG left, LONG top)
     wsprintf(szDiscardPileSize, L"Discard Pile Size: %d", hGame->nDiscardPileIndex + 1);
     TextOut(hdc, left, top, szDiscardPileSize, lstrlen(szDiscardPileSize));
 
-    HCARD hCurrentCard = hGame->drawPile[hGame->nDrawPileIndex];
+    HCARD hCurrentCard = hGame->discardPile[hGame->nDiscardPileIndex];
 
     if (hCurrentCard != NULL)
     {
