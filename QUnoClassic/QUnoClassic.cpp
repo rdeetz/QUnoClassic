@@ -46,6 +46,8 @@ HGAME _hCurrentGame;
 
 ATOM RegisterWndClass(HINSTANCE);
 BOOL InitInstance(HINSTANCE, INT);
+LRESULT LoadOptions(HINSTANCE);
+LRESULT SaveOptions();
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK OptionsDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
@@ -84,19 +86,7 @@ INT APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInst
     _hbrushGreen = CreateSolidBrush(Q_COLOR_GREEN);
     _hbrushBlack = CreateSolidBrush(Q_COLOR_BLACK);
 
-    HKEY hKey;
-    RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hKey);
-
-    DWORD cbString = sizeof(_szDefaultPlayerName);
-    LSTATUS lResult = RegGetValue(hKey, NULL, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, RRF_RT_REG_SZ, NULL, _szDefaultPlayerName, &cbString);
-
-    if (lResult != ERROR_SUCCESS)
-    {
-        LoadString(hInstance, IDS_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
-    }
-
-    DWORD cbUint = sizeof(UINT);
-    lResult = RegGetValue(hKey, NULL, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, RRF_RT_REG_DWORD, NULL, &_nDefaultComputerPlayers, &cbUint);
+    LoadOptions(hInstance);
 
     HACCEL hAccelerators = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_QUNOCLASSIC));
     MSG msg;
@@ -123,7 +113,7 @@ ATOM RegisterWndClass(HINSTANCE hInstance)
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_QUNOCLASSIC));
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_QUNOCLASSIC_SMALL));
+    wcex.hIconSm        = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_QUNOCLASSIC_SMALL));
     wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_QUNOCLASSIC);
@@ -158,6 +148,38 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
    UpdateWindow(hWnd);
 
    return TRUE;
+}
+
+LRESULT LoadOptions(HINSTANCE hInstance)
+{
+    HKEY hKey;
+    RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hKey);
+
+    DWORD cbString = sizeof(_szDefaultPlayerName);
+    LSTATUS lResult = RegGetValue(hKey, NULL, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, RRF_RT_REG_SZ, NULL, _szDefaultPlayerName, &cbString);
+
+    if (lResult != ERROR_SUCCESS)
+    {
+        LoadString(hInstance, IDS_DEFAULTPLAYERNAME, _szDefaultPlayerName, MAX_LOADSTRING);
+    }
+
+    DWORD cbUint = sizeof(UINT);
+    lResult = RegGetValue(hKey, NULL, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, RRF_RT_REG_DWORD, NULL, &_nDefaultComputerPlayers, &cbUint);
+
+    return lResult;
+}
+
+LRESULT SaveOptions()
+{
+    HKEY hKey;
+    RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hKey);
+
+    DWORD cbString = sizeof(_szDefaultPlayerName);
+    LSTATUS lResult = RegSetValueEx(hKey, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, 0, REG_SZ, (BYTE*)_szDefaultPlayerName, cbString);
+    DWORD cbUint = sizeof(UINT);
+    lResult = RegSetValueEx(hKey, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, 0, REG_DWORD, (BYTE*)&_nDefaultComputerPlayers, cbUint);
+
+    return lResult;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -318,14 +340,7 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
         {
             if (IsDefaultPlayerNameValid(hDlg) && IsDefaultComputerPlayersValid(hDlg))
             {
-                HKEY hKey;
-                RegCreateKey(HKEY_CURRENT_USER, Q_REGISTRY_KEY_ROOT, &hKey);
-
-                DWORD cbString = sizeof(_szDefaultPlayerName);
-                LSTATUS lResult = RegSetValueEx(hKey, Q_REGISTRY_VALUE_DEFAULTPLAYERNAME, 0, REG_SZ, (BYTE*)_szDefaultPlayerName, cbString);
-                DWORD cbUint = sizeof(UINT);
-                lResult = RegSetValueEx(hKey, Q_REGISTRY_VALUE_DEFAULTCOMPUTERPLAYERS, 0, REG_DWORD, (BYTE*)&_nDefaultComputerPlayers, cbUint);
-
+                SaveOptions();
                 EndDialog(hDlg, LOWORD(wParam));
             }
             else
