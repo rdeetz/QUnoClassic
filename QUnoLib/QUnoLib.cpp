@@ -33,6 +33,9 @@ HGAME CreateGame()
 
     // For some reason player[0] appears to be corrupted after the call to ProvideStandardDeck.
     hGame->players[0] = NULL;
+    hGame->nCurrentPlayerIndex = -1;
+    hGame->nDrawPileIndex = -1;
+    hGame->nDiscardPileIndex = -1;
 
     return hGame;
 }
@@ -197,9 +200,24 @@ BOOL DealGame(HGAME hGame)
             HPLAYER hPlayer = hGame->players[player];
             HCARD hCard = hGame->drawPile[index];
 
-            AddCardToPlayer(hPlayer, hCard);
+            if (AddCardToPlayer(hPlayer, hCard) >= 0)
+            {
+                hGame->drawPile[index] = NULL;
+                hGame->nDrawPileIndex = (index + 1); // TODO Make sure this doesn't overflow.                
+            }
         }
     }
+
+    // Set the first player.
+    hGame->nCurrentPlayerIndex = 0;
+
+    // Pop one card off the draw pile and add to the discard pile.
+    // If this is a wild card, need to dry again.
+    HCARD hTopCard = hGame->drawPile[hGame->nDrawPileIndex];
+    hGame->drawPile[hGame->nDrawPileIndex] = NULL;
+    hGame->nDrawPileIndex = hGame->nDrawPileIndex + 1;
+    hGame->discardPile[0] = hTopCard;
+    hGame->nDiscardPileIndex = 0;
 
     return TRUE;
 }
@@ -216,7 +234,7 @@ BOOL CanCardPlay(HGAME hGame, HCARD hCard)
     else
     {
         if ((hCard->value == hCurrentCard->value) || 
-            ((hCard->color == hCurrentCard->color) || (hCard->color == hGame->nCurrentWildColor)))
+            ((hCard->color == hCurrentCard->color) || (hCard->color == hGame->currentWildColor)))
         {
             canPlay = TRUE;
         }

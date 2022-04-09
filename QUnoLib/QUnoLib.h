@@ -13,7 +13,7 @@
 #define PLAYER_CARDS_MAX    16
 #define PLAYER_CARDS_START  5
 #define GAME_PLAYERS_MAX    9
-#define GAME_DECK_MAX       ((12 * 4) + 4) // 1 each for each color, 2 wild, 2 wild-draw-four
+#define GAME_DECK_MAX       ((13 * 4) + 4) // 1 each for each color, 2 wild, 2 wild-draw-four
 
 #define CARD_COLOR_WILD     0
 #define CARD_COLOR_RED      1
@@ -63,13 +63,13 @@ typedef struct _GAME
     CARD deck[GAME_DECK_MAX];
     HPLAYER players[GAME_PLAYERS_MAX];
     UINT nPlayerCount;
+    INT nCurrentPlayerIndex;
     HCARD drawPile[GAME_DECK_MAX];
-    UINT nDrawPileIndex;
+    INT nDrawPileIndex;
     HCARD discardPile[GAME_DECK_MAX];
-    UINT nDiscardPileIndex;
-    UINT8 nCurrentDirection;
-    UINT8 nCurrentWildColor;
-    UINT nCurrentPlayerIndex;
+    INT nDiscardPileIndex;
+    UINT8 currentDirection;
+    UINT8 currentWildColor;
 } GAME;
 
 typedef GAME* HGAME;

@@ -56,6 +56,8 @@ BOOL IsDefaultPlayerNameValid(HWND);
 BOOL IsDefaultComputerPlayersValid(HWND);
 VOID StartGame();
 VOID StopGame();
+VOID DrawCard(HDC, HCARD, LONG, LONG);
+VOID DrawGameStatus(HDC, HGAME, LONG, LONG);
 
 INT APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPTSTR lpCmdLine, _In_ INT nCmdShow)
 {
@@ -250,41 +252,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         if (hCard != NULL)
                         {
                             top += size.cy;
-                            TCHAR szCard[MAX_LOADSTRING];
-                            wsprintf(szCard, L"Color: %d, Value: %d", hCard->color, hCard->value);
-                            TextOut(hdc, left, top, szCard, lstrlen(szCard));
-                            RECT rcCard;
-                            rcCard.left = left;
-                            rcCard.top = top;
-                            rcCard.right = left + size.cx;
-                            rcCard.bottom = top + size.cy;
-
-                            switch (hCard->color)
-                            {
-                            case CARD_COLOR_RED:
-                                FillRect(hdc, &rcCard, _hbrushRed);
-                                break;
-                            case CARD_COLOR_BLUE:
-                                FillRect(hdc, &rcCard, _hbrushBlue);
-                                break;
-                            case CARD_COLOR_YELLOW:
-                                FillRect(hdc, &rcCard, _hbrushYellow);
-                                break;
-                            case CARD_COLOR_GREEN:
-                                FillRect(hdc, &rcCard, _hbrushGreen);
-                                break;
-                            case CARD_COLOR_WILD:
-                                FillRect(hdc, &rcCard, _hbrushBlack);
-                                break;
-                            default:
-                                break;
-                            }
+                            DrawCard(hdc, hCard, left, top);
                         }
                     }
 
                     left += (size.cx + 128); // 64 is a guess for a nice padding.
                 }
             }
+
+            DrawGameStatus(hdc, _hCurrentGame, rcClient.left + 128, rcClient.top + (5 * 32));
         }
         else
         {
@@ -559,6 +535,94 @@ VOID StopGame()
 {
     DestroyGame(_hCurrentGame);
     _hCurrentGame = NULL;
+
+    return;
+}
+
+VOID DrawCard(HDC hdc, HCARD hCard, LONG left, LONG top)
+{
+    if (hCard == NULL)
+    {
+        return;
+    }
+
+    TCHAR szCard[MAX_LOADSTRING];
+    wsprintf(szCard, L"Color: %d, Value: %d", hCard->color, hCard->value);
+    SIZE size;
+    GetTextExtentPoint32(hdc, szCard, lstrlen(szCard), &size);
+    TextOut(hdc, left, top, szCard, lstrlen(szCard));
+    RECT rcCard;
+    rcCard.left = left;
+    rcCard.top = top;
+    rcCard.right = left + (size.cx / 2);
+    rcCard.bottom = top + size.cy;
+
+    switch (hCard->color)
+    {
+    case CARD_COLOR_RED:
+        FillRect(hdc, &rcCard, _hbrushRed);
+        break;
+    case CARD_COLOR_BLUE:
+        FillRect(hdc, &rcCard, _hbrushBlue);
+        break;
+    case CARD_COLOR_YELLOW:
+        FillRect(hdc, &rcCard, _hbrushYellow);
+        break;
+    case CARD_COLOR_GREEN:
+        FillRect(hdc, &rcCard, _hbrushGreen);
+        break;
+    case CARD_COLOR_WILD:
+        FillRect(hdc, &rcCard, _hbrushBlack);
+        break;
+    default:
+        break;
+    }
+
+    return;
+}
+
+VOID DrawGameStatus(HDC hdc, HGAME hGame, LONG left, LONG top)
+{
+    if (hGame == NULL)
+    {
+        return;
+    }
+
+    TCHAR szCurrentPlayerName[MAX_LOADSTRING];
+    lstrcpy(szCurrentPlayerName, hGame->players[hGame->nCurrentPlayerIndex]->szPlayerName);
+    TCHAR szCurrentPlayer[MAX_LOADSTRING];
+    wsprintf(szCurrentPlayer, L"Current Player: %s", szCurrentPlayerName);
+    SIZE size;
+    GetTextExtentPoint32(hdc, szCurrentPlayer, lstrlen(szCurrentPlayer), &size);
+    TextOut(hdc, left, top, szCurrentPlayer, lstrlen(szCurrentPlayer));
+
+    top += size.cy;
+    TCHAR szCurrentDirection[MAX_LOADSTRING];
+    wsprintf(szCurrentDirection, L"Current Direction: %d", hGame->currentDirection);
+    TextOut(hdc, left, top, szCurrentDirection, lstrlen(szCurrentDirection));
+
+    top += size.cy;
+    TCHAR szCurrentWildColor[MAX_LOADSTRING];
+    wsprintf(szCurrentWildColor, L"Current Wild Color: %d", hGame->currentWildColor);
+    TextOut(hdc, left, top, szCurrentWildColor, lstrlen(szCurrentWildColor));
+
+    top += size.cy;
+    TCHAR szDrawPileSize[MAX_LOADSTRING];
+    wsprintf(szDrawPileSize, L"Draw Pile Size: %d", GAME_DECK_MAX - hGame->nDrawPileIndex);
+    TextOut(hdc, left, top, szDrawPileSize, lstrlen(szDrawPileSize));
+
+    top += size.cy;
+    TCHAR szDiscardPileSize[MAX_LOADSTRING];
+    wsprintf(szDiscardPileSize, L"Discard Pile Size: %d", hGame->nDiscardPileIndex + 1);
+    TextOut(hdc, left, top, szDiscardPileSize, lstrlen(szDiscardPileSize));
+
+    HCARD hCurrentCard = hGame->drawPile[hGame->nDrawPileIndex];
+
+    if (hCurrentCard != NULL)
+    {
+        top += size.cy;
+        DrawCard(hdc, hCurrentCard, left, top);
+    }
 
     return;
 }
