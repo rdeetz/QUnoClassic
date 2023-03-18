@@ -5,7 +5,7 @@ An Uno-like card game, implemented like it's 1995.
 ## Requirements
 
 * Windows
-* [Windows SDK](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk/)
+* [Windows SDK](https://developer.microsoft.com/en-US/windows/downloads/windows-sdk/)
 * Your favorite editor (my favorite editor is [Visual Studio Code](https://code.visualstudio.com/))
 * [Debugging Tools for Windows](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/)
 
