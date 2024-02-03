@@ -43,6 +43,11 @@ HBRUSH _hbrushYellow;
 HBRUSH _hbrushGreen;
 HBRUSH _hbrushBlack;
 HGAME _hCurrentGame;
+BOOL _bIsMouseCaptured = FALSE;
+POINTS _ptBegin;
+POINTS _ptEnd;
+POINTS _ptPreviousEnd;
+BOOL _bIsDrawing = FALSE;
 
 ATOM RegisterWndClass(HINSTANCE);
 BOOL InitInstance(HINSTANCE, INT);
@@ -299,6 +304,79 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         EndPaint(hWnd, &ps);
     }
+        break;
+
+    case WM_LBUTTONDOWN:
+        if (_bIsMouseCaptured)
+        {
+            _bIsDrawing = FALSE;
+            ClipCursor(NULL);
+            ReleaseCapture();
+            _bIsMouseCaptured = FALSE;
+        }
+        else
+        {
+            SetCapture(hWnd);
+            _bIsMouseCaptured = TRUE;
+
+            RECT rc;
+            GetClientRect(hWnd, &rc);
+
+            POINT ptUL;
+            ptUL.x = rc.left;
+            ptUL.y = rc.top;
+            ClientToScreen(hWnd, &ptUL);
+
+            POINT ptLR;
+            ptLR.x = rc.right;
+            ptLR.y = rc.bottom;
+            ClientToScreen(hWnd, &ptLR);
+
+            SetRect(&rc, ptUL.x, ptUL.y, ptLR.x, ptLR.y);
+            ClipCursor(&rc);
+
+            _ptBegin = MAKEPOINTS(lParam);
+        }
+
+        break;
+
+    case WM_MOUSEMOVE:
+        if (_bIsMouseCaptured)
+        {
+            if (wParam & MK_LBUTTON)
+            {
+                HDC hdc = GetDC(hWnd);
+
+                SetROP2(hdc, R2_NOTXORPEN);
+
+                if (_bIsDrawing)
+                {
+                    MoveToEx(hdc, _ptBegin.x, _ptBegin.y, NULL);
+                    LineTo(hdc, _ptPreviousEnd.x, _ptPreviousEnd.y);
+                }
+
+                _ptEnd = MAKEPOINTS(lParam);
+                MoveToEx(hdc, _ptBegin.x, _ptBegin.y, NULL);
+                LineTo(hdc, _ptEnd.x, _ptEnd.y);
+
+                _ptPreviousEnd = _ptEnd;
+                _bIsDrawing = TRUE;
+
+                ReleaseDC(hWnd, hdc);
+            }
+        }
+
+        break;
+
+    case WM_LBUTTONUP:
+        if (_bIsMouseCaptured)
+        {
+            _bIsDrawing = FALSE;
+            ClipCursor(NULL);
+            ReleaseCapture();
+            _bIsMouseCaptured = FALSE;
+        }
+
         break;
 
     case WM_DESTROY:
