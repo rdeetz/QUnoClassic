@@ -71,7 +71,7 @@ BEGIN
             VALUE "FileDescription", "An Uno-like card game."
             VALUE "FileVersion", "2.5.0.0"
             VALUE "InternalName", "QUnoLib.dll"
-            VALUE "LegalCopyright", "Copyright (c) 2021 Roger Deetz. All rights reserved."
+            VALUE "LegalCopyright", "Copyright (c) 2025 Roger Deetz. All rights reserved."
             VALUE "OriginalFilename", "QUnoLib.dll"
             VALUE "ProductName", "QUno"
             VALUE "ProductVersion", "2.5.0.0"
