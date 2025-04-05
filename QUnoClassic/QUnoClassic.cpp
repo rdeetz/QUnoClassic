@@ -28,6 +28,11 @@ const COLORREF Q_COLOR_YELLOW   = 0x0000FFFF;
 const COLORREF Q_COLOR_GREEN    = 0x0000FF00;
 const COLORREF Q_COLOR_BLACK    = 0x00000000;
 
+const LONG Q_CARD_WIDTH         = 128;
+const LONG Q_CARD_HEIGHT        = 192;
+const LONG Q_CARD_OFFSET        = 16;
+const LONG Q_CARD_PADDING       = 32;
+
 HINSTANCE _hInstance;
 TCHAR _szWindowTitle[MAX_LOADSTRING];
 TCHAR _szWindowClass[MAX_LOADSTRING];
@@ -228,6 +233,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
     }
+
         break;
 
     case WM_SIZING:
@@ -256,20 +262,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             RECT rcClient;
             GetClientRect(hWnd, &rcClient);
-            LONG left = rcClient.left + 128;
+            LONG left = rcClient.left + Q_CARD_PADDING;
+            LONG playerTextHeight = 0;
+            LONG playerCount = 0;
+            LONG maxCardCount = 0;
 
             for (UINT player = 0; player < GAME_PLAYERS_MAX; player++)
             {
                 HPLAYER hPlayer = _hCurrentGame->players[player];
+                LONG playerCardCount = 0;
                 
                 if (hPlayer != NULL)
                 {
+                    playerCount++;
                     SIZE size;
                     GetTextExtentPoint32(hdc, hPlayer->szPlayerName, lstrlen(hPlayer->szPlayerName), &size);
-                    LONG top = rcClient.top + size.cy;
+                    playerTextHeight = size.cy;
+                    LONG top = rcClient.top + Q_CARD_PADDING;
                     TextOut(hdc, left, top, hPlayer->szPlayerName, lstrlen(hPlayer->szPlayerName));
                     LPTSTR lpPlayerKind = hPlayer->bIsHuman ? _szPlayerKindHuman : _szPlayerKindRobot;
-                    top += size.cy;
+                    top += playerTextHeight;
+                    LONG cardLeft = left;
                     TextOut(hdc, left, top, lpPlayerKind, lstrlen(lpPlayerKind));
 
                     for (UINT card = 0; card < PLAYER_CARDS_MAX; card++)
@@ -278,16 +291,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                         if (hCard != NULL)
                         {
-                            top += size.cy;
-                            DrawCard(hdc, hCard, left, top);
+                            playerCardCount++;
+                            top += Q_CARD_OFFSET;
+                            DrawCard(hdc, hCard, cardLeft, top);
+                            cardLeft += Q_CARD_OFFSET;
                         }
                     }
 
-                    left += (size.cx + 128); // 64 is a guess for a nice padding.
+                    left += (playerCardCount * Q_CARD_OFFSET) + Q_CARD_WIDTH + Q_CARD_OFFSET;
+
+                    if (playerCardCount > maxCardCount)
+                    {
+                        maxCardCount = playerCardCount;
+                    }
                 }
             }
 
-            DrawGameStatus(hdc, _hCurrentGame, rcClient.left + 128, rcClient.top + (5 * 32));
+            LONG statusLeft = rcClient.left + Q_CARD_PADDING;
+            LONG statusTop = (rcClient.top + Q_CARD_OFFSET) + ((maxCardCount * Q_CARD_OFFSET) + Q_CARD_HEIGHT) + (playerTextHeight * 2) + Q_CARD_PADDING;
+            DrawGameStatus(hdc, _hCurrentGame, statusLeft, statusTop);
         }
         else
         {
@@ -304,6 +326,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         EndPaint(hWnd, &ps);
     }
+
         break;
 
     case WM_LBUTTONDOWN:
@@ -639,37 +662,56 @@ VOID DrawCard(HDC hdc, HCARD hCard, LONG left, LONG top)
         return;
     }
 
-    TCHAR szCard[MAX_LOADSTRING];
-    wsprintf(szCard, L"Color: %d, Value: %d", hCard->color, hCard->value);
-    SIZE size;
-    GetTextExtentPoint32(hdc, szCard, lstrlen(szCard), &size);
-    TextOut(hdc, left, top, szCard, lstrlen(szCard));
     RECT rcCard;
     rcCard.left = left;
     rcCard.top = top;
-    rcCard.right = left + (size.cx / 2);
-    rcCard.bottom = top + size.cy;
+    rcCard.right = left + Q_CARD_WIDTH;
+    rcCard.bottom = top + Q_CARD_HEIGHT;
+
+    HBRUSH hBrush = NULL;
 
     switch (hCard->color)
     {
-    case CARD_COLOR_RED:
-        FillRect(hdc, &rcCard, _hbrushRed);
-        break;
-    case CARD_COLOR_BLUE:
-        FillRect(hdc, &rcCard, _hbrushBlue);
-        break;
-    case CARD_COLOR_YELLOW:
-        FillRect(hdc, &rcCard, _hbrushYellow);
-        break;
-    case CARD_COLOR_GREEN:
-        FillRect(hdc, &rcCard, _hbrushGreen);
-        break;
-    case CARD_COLOR_WILD:
-        FillRect(hdc, &rcCard, _hbrushBlack);
-        break;
-    default:
-        break;
+        case CARD_COLOR_RED:
+            hBrush = _hbrushRed;
+            break;
+        case CARD_COLOR_BLUE:
+            hBrush = _hbrushBlue;
+            break;
+        case CARD_COLOR_YELLOW:
+            hBrush = _hbrushYellow;
+            break;
+        case CARD_COLOR_GREEN:
+            hBrush = _hbrushGreen;
+            break;
+        case CARD_COLOR_WILD:
+            hBrush = _hbrushBlack;
+            break;
+        default:
+            hBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
+            break;
     }
+
+    FillRect(hdc, &rcCard, hBrush);
+
+    HPEN hPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, GetStockObject(NULL_BRUSH));
+    Rectangle(hdc, rcCard.left, rcCard.top, rcCard.right, rcCard.bottom);
+    SelectObject(hdc, hOldPen);
+    SelectObject(hdc, hOldBrush);
+    DeleteObject(hPen);
+
+    TCHAR szValue[MAX_LOADSTRING];
+    wsprintf(szValue, L"%d", hCard->value);
+
+    SIZE textSize;
+    GetTextExtentPoint32(hdc, szValue, lstrlen(szValue), &textSize);
+    LONG textLeft = left + (Q_CARD_WIDTH - textSize.cx) / 2;
+    LONG textTop = top + (Q_CARD_HEIGHT - textSize.cy) / 2;
+
+    SetBkMode(hdc, TRANSPARENT);
+    TextOut(hdc, textLeft, textTop, szValue, lstrlen(szValue));
 
     return;
 }
