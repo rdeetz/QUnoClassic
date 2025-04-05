@@ -70,6 +70,7 @@ VOID StartGame();
 VOID StopGame();
 VOID DrawNewGame(HDC, RECT);
 VOID DrawCard(HDC, HCARD, LONG, LONG);
+VOID DrawPlayer(HDC, HPLAYER, LONG, LONG);
 VOID DrawGameStatus(HDC, HGAME, LONG, LONG);
 
 INT APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPreviousInstance, _In_ LPTSTR lpCmdLine, _In_ INT nCmdShow)
@@ -264,40 +265,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (_hCurrentGame != NULL)
         {
             LONG left = rcClient.left + Q_CARD_PADDING;
-            LONG playerTextHeight = 0;
-            LONG playerCount = 0;
             LONG maxCardCount = 0;
 
             for (UINT player = 0; player < GAME_PLAYERS_MAX; player++)
             {
                 HPLAYER hPlayer = _hCurrentGame->players[player];
-                LONG playerCardCount = 0;
+                LONG playerCardCount = 5; ////
                 
                 if (hPlayer != NULL)
                 {
-                    playerCount++;
-                    SIZE size;
-                    GetTextExtentPoint32(hdc, hPlayer->szPlayerName, lstrlen(hPlayer->szPlayerName), &size);
-                    playerTextHeight = size.cy;
-                    LONG top = rcClient.top + Q_CARD_PADDING;
-                    TextOut(hdc, left, top, hPlayer->szPlayerName, lstrlen(hPlayer->szPlayerName));
-                    LPTSTR lpPlayerKind = hPlayer->bIsHuman ? _szPlayerKindHuman : _szPlayerKindRobot;
-                    top += playerTextHeight;
-                    LONG cardLeft = left;
-                    TextOut(hdc, left, top, lpPlayerKind, lstrlen(lpPlayerKind));
-
-                    for (UINT card = 0; card < PLAYER_CARDS_MAX; card++)
-                    {
-                        HCARD hCard = hPlayer->cards[card];
-
-                        if (hCard != NULL)
-                        {
-                            playerCardCount++;
-                            top += Q_CARD_OFFSET;
-                            DrawCard(hdc, hCard, cardLeft, top);
-                            cardLeft += Q_CARD_OFFSET;
-                        }
-                    }
+                    DrawPlayer(hdc, hPlayer, left, rcClient.top + Q_CARD_PADDING);
 
                     left += (playerCardCount * Q_CARD_OFFSET) + Q_CARD_WIDTH + Q_CARD_OFFSET;
 
@@ -309,7 +286,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
 
             LONG statusLeft = ((left + Q_CARD_WIDTH) - (rcClient.left + Q_CARD_PADDING)) / 2 - ((Q_CARD_WIDTH) / 2); // Q_CARD_WIDTH is close but not exact.
-            LONG statusTop = (rcClient.top + Q_CARD_OFFSET) + ((maxCardCount * Q_CARD_OFFSET) + Q_CARD_HEIGHT) + (playerTextHeight * 2) + Q_CARD_PADDING;
+            LONG statusTop = (rcClient.top + Q_CARD_OFFSET) + ((maxCardCount * Q_CARD_OFFSET) + Q_CARD_HEIGHT) + (Q_CARD_OFFSET * 2) + Q_CARD_PADDING; // Q_CARD_OFFSET is close but not exact.
             DrawGameStatus(hdc, _hCurrentGame, statusLeft, statusTop);
         }
         else
@@ -718,6 +695,32 @@ VOID DrawCard(HDC hdc, HCARD hCard, LONG left, LONG top)
 
     SetBkMode(hdc, TRANSPARENT);
     TextOut(hdc, textLeft, textTop, szValue, lstrlen(szValue));
+
+    return;
+}
+
+VOID DrawPlayer(HDC hdc, HPLAYER hPlayer, LONG left, LONG top)
+{
+    SIZE size;
+    GetTextExtentPoint32(hdc, hPlayer->szPlayerName, lstrlen(hPlayer->szPlayerName), &size);
+    LONG playerTextHeight = size.cy;
+    TextOut(hdc, left, top, hPlayer->szPlayerName, lstrlen(hPlayer->szPlayerName));
+    LPTSTR lpPlayerKind = hPlayer->bIsHuman ? _szPlayerKindHuman : _szPlayerKindRobot;
+    top += playerTextHeight;
+    LONG cardLeft = left;
+    TextOut(hdc, left, top, lpPlayerKind, lstrlen(lpPlayerKind));
+
+    for (UINT card = 0; card < PLAYER_CARDS_MAX; card++)
+    {
+        HCARD hCard = hPlayer->cards[card];
+
+        if (hCard != NULL)
+        {
+            top += Q_CARD_OFFSET;
+            DrawCard(hdc, hCard, cardLeft, top);
+            cardLeft += Q_CARD_OFFSET;
+        }
+    }
 
     return;
 }
