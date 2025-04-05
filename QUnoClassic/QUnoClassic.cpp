@@ -307,7 +307,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 }
             }
 
-            LONG statusLeft = rcClient.left + Q_CARD_PADDING;
+            LONG statusLeft = ((left + Q_CARD_WIDTH) - (rcClient.left + Q_CARD_PADDING)) / 2 - ((Q_CARD_WIDTH) / 2); // Q_CARD_WIDTH is close but not exact.
             LONG statusTop = (rcClient.top + Q_CARD_OFFSET) + ((maxCardCount * Q_CARD_OFFSET) + Q_CARD_HEIGHT) + (playerTextHeight * 2) + Q_CARD_PADDING;
             DrawGameStatus(hdc, _hCurrentGame, statusLeft, statusTop);
         }
